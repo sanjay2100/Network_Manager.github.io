@@ -34,6 +34,7 @@ const EditModal = ({ editOpen, handleviewClose, editrows, handleOpen ,productId,
 
 console.log("Add more fields",AddMoreFields);
 
+console.log("edit ",editrows);
 
 const handleDelete = (id) => {
   DeleteExistingField(productId,id,handleClickOpen)
@@ -72,28 +73,33 @@ const handleDelete = (id) => {
                 <TableCell align="center">Delete</TableCell>
               </TableRow>
             </TableHead>
+            {Array.isArray(editrows)&&editrows.length>0&&editrows[0].field_id!==null?
             <TableBody>
-              {Array.isArray(editrows)&&editrows.map((row) => (
-                <TableRow key={row.display_field_name} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+            {Array.isArray(editrows)&&(editrows.length>0&&editrows[0].field_id!==null)&&editrows.map((row) => (
+              <TableRow key={row.display_field_name} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
 
-                  <TableCell component="th" scope="row" align="left">
-                    {row.field_name}
-                  </TableCell>
-                  <TableCell align="left">{row.display_field_name}</TableCell>
-                  <TableCell>
-                    <Select sx={{ width: '80%' }} 
-                    value={row.value_required}
-                    >
-                      <MenuItem value={true} >True</MenuItem>
-                      <MenuItem value={false}>False</MenuItem>
-                    </Select>
-                  </TableCell>
-                  <TableCell align="center" sx={{ color: '#D84646' }}>
-                    {<IconTrash onClick={()=>handleDelete(row.field_id)}/>}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
+                <TableCell component="th" scope="row" align="left">
+                  {row.field_name}
+                </TableCell>
+                <TableCell align="left">{row.display_field_name}</TableCell>
+                <TableCell>
+                  <Select sx={{ width: '80%' }} 
+                  value={row.value_required}
+                  >
+                    <MenuItem value={true} >True</MenuItem>
+                    <MenuItem value={false}>False</MenuItem>
+                  </Select>
+                </TableCell>
+                <TableCell align="center" sx={{ color: '#D84646' }}>
+                  {<IconTrash onClick={()=>handleDelete(row.field_id)}/>}
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+          :
+          <p style={{textAlign:'center'}}>No fields added</p>
+          }
+            
           </Table>
         </TableContainer>
       </DialogContent>
