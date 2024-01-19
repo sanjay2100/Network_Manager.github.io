@@ -45,7 +45,7 @@ const AdminUtils = {
     },
     {
       id: 'Add user to group',
-      title: 'Add User to Groups',
+      title: 'Manage Groups',
       type: 'item',
       url: '/Admin/Addusergroup',
       icon: icons.IconUsers,
