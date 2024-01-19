@@ -8,7 +8,8 @@ import Box from '@mui/material/Box';
 import Snackbar from '@mui/material/Snackbar';
 import FieldModal from './Components/AddProduct/FieldModal';
 import EditModal from './Components/AddProduct/EditModal';
-import { PostApi, getApi,deleteApi } from 'API/Products/apis';
+import { PostApi, getApi, deleteApi, getById, postNewFieldApi } from 'API/Products/apis';
+import AddMoreModal from './Components/AddProduct/AddMoreFields';
 
 function createData(name, type, required, icon) {
   return { name, type, required, icon };
@@ -16,12 +17,14 @@ function createData(name, type, required, icon) {
 
 const AddProduct = () => {
   const [open, setOpen] = useState(false);
+  const [OpenAddMore,setOpenAddMore] = useState(false);
   const [post, setPost] = useState([]);
   const [TableRows, setTableRows] = useState([]);
+  const [rows, setRows] = useState([]); //set all product
 
   const [selectedCellParams, setSelectedCellParams] = useState(null);
   const [cellModesModel, setCellModesModel] = useState({});
-  const[Error,setError]=useState(false)
+  const [Error, setError] = useState(false);
   const [Data, setData] = useState({
     id: '',
     name: '',
@@ -29,7 +32,9 @@ const AddProduct = () => {
     required: ''
   });
 
-  const[OpenAlert, setOpenAlert] = useState(false)
+  const[AddMoreFields, setAddMoreFields] = useState({})
+
+  const [OpenAlert, setOpenAlert] = useState(false);
 
   const handleClick = () => {
     setOpenAlert(true);
@@ -47,16 +52,24 @@ const AddProduct = () => {
   // const[getData,setGetData]=useState([])
   const dataref = useRef();
   const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const handleOpenAddMore=()=>setOpenAddMore(true)
+  const handleClose = () =>{
+    setOpen(false);
+    setOpenAddMore(false);
+  }
   //   edit Modal
   const [editOpen, setEditOpen] = useState(false);
+  const [EditData, setEditData] = useState([]);
   const handleClickOpen = (id) => {
     console.log(id);
+    const filtered=null
     setEditOpen(true);
   };
   const handleviewClose = () => {
     setEditOpen(false);
   };
+
+  console.log(EditData);
 
   const [PostData, setPostData] = useState({
     product_name: '',
@@ -125,19 +138,34 @@ const AddProduct = () => {
 
   const handleDelete = (id) => {
     console.log(id);
-   deleteApi(id,getApi,setRows)
-  }
+    deleteApi(id, getApi, setRows);
+  };
 
-  const editrows = [
-    createTableData('Text', 'email', ['false', 'true']),
-    createTableData('Number', 'number', ['false', 'true']),
-    createTableData('Date', 'date', ['false', 'true']),
-    createTableData('Email', 'email', ['false', 'true']),
-    createTableData('Age', 'number', ['false', 'true'])
-  ];
+  const [editrows, setEditRows] = useState([]);
+  useEffect(() => {
+    console.log(EditData);
+    setEditRows([])
+    if (EditData[0]) {
+      console.log("jk", EditData[0].fields);
+      EditData[0].fields.map((field) => {
+        console.log("jk", field.field_name);
+       return setEditRows([...editrows, createTableData(field.field_name, field.display_field_name)]);
+      });
+    }
+  }, [EditData]);
+
+  console.log(editrows);
+
+  // const editrows = [
+  //
+
+  //   createTableData('Date', 'date', ['false', 'true']),
+  //   createTableData('Email', 'email', ['false', 'true']),
+  //   createTableData('Age', 'number', ['false', 'true'])
+  // ];
 
   const columns = [
-    { field: "_id", headerName: 'ID', width: 70 },
+    { field: '_id', headerName: 'ID', width: 70 },
     { field: 'product_name', headerName: 'Product name', width: 230 },
     { field: 'display_name', headerName: 'Display name', width: 230 },
     {
@@ -163,9 +191,9 @@ const AddProduct = () => {
       type: 'number',
       width: 55,
       renderCell: (params) => (
-        <IconButton aria-label="view" onClick={()=>handleClickOpen(params.row._id)} color="success">
+        <IconButton aria-label="view" onClick={() => handleClickOpen(params.row._id)} color="success">
           {' '}
-          <IconEye  />
+          <IconEye />
         </IconButton>
       )
     },
@@ -206,22 +234,25 @@ const AddProduct = () => {
   // ];
 
 
-  const [rows,setRows]=useState([])
+  //Add new field to existing product
 
-  useEffect(()=>{
-    getApi(setRows)
+  const handleAddNewProduct =()=>{
+    postNewFieldApi(AddMoreFields.productId,{fields:AddMoreFields.fields},handleClickOpen,handleClose)
+  }
 
-  },[])
+  useEffect(() => {
+    getApi(setRows);
+  }, []);
 
-  useEffect(()=>{
+  useEffect(() => {
     console.log(rows['products']);
-  },[rows])
+  }, [rows]);
 
   const handleChange = (type, value) => {
     if (type === 'field') {
       console.log(value);
       console.log(value.name);
-      setData({ ...Data, name: value.name, type: value.type, id: value._id ,display_name:value.display_name});
+      setData({ ...Data, name: value.name, type: value.type, id: value._id, display_name: value.display_name });
       console.log(Data);
     } else {
       console.log(value);
@@ -252,7 +283,7 @@ const AddProduct = () => {
 
   const handleAddData = (e) => {
     e.preventDefault();
-    const updataedData = [...post,{field_obj_id: Data.id,value_required:Data.required}];
+    const updataedData = [...post, { field_obj_id: Data.id, value_required: Data.required }];
 
     setTableRows([...TableRows, createData(Data.name, Data.type, Data.required, 'x')]);
     console.log(TableRows);
@@ -294,6 +325,22 @@ const handleSubmit = (e) => {
         setTableRows={setTableRows}
         Error={Error}
         setError={setError}
+      />
+
+      <AddMoreModal
+      open={OpenAddMore}
+      handleChange={handleChange}
+      deleteAddedData={deleteAddedData}
+      handleAddData={handleAddData}
+      handleClose={handleClose}
+      Data={Data}
+      setData={setData}
+      dataref={dataref}
+      TableRows={TableRows}
+      setTableRows={setTableRows}
+      Error={Error}
+      setError={setError}
+      handleSubmit={handleAddNewProduct}
       />
 
       {/* End of add field modal */}
@@ -393,7 +440,7 @@ const handleSubmit = (e) => {
       </form>
       {/* Edit Modal */}
 
-      <EditModal editOpen={editOpen} handleviewClose={handleviewClose} editrows={editrows} handleOpen={handleOpen} />
+      <EditModal editOpen={editOpen} handleviewClose={handleviewClose} editrows={EditData[0]?EditData[0].fields:null} handleOpen={handleOpenAddMore} productId={EditData[0]?EditData[0]._id:null} post={post} AddMoreFields={AddMoreFields} setAddMoreFields={setAddMoreFields}  handleClickOpen={handleClickOpen} />
     </SubCard>
   );
 };

@@ -39,7 +39,8 @@ export const getApi = async (setData, getApi, setRows) => {
 
 export const getById =async(id,setData)=>{
     try {
-        axios.get(`/products/${id}`).then((res) => {setData(res.data)})
+        axios.get(`/products/${id}`).then((res) => {setData(res.data['product'])})
+        
     }
     catch (err) {
       console.log(err);
@@ -55,3 +56,49 @@ export const deleteApi = async (id,getApi,setRow) => {
     console.log(err);
   }
 };
+
+
+export const deleteFieldApi=async(id,data,)=>{
+  try{
+    await axios.put(`/products/${id}`,data)
+    .then((res)=>{
+        console.log(res.data)
+    })
+    }
+  
+  catch(err){
+    console.log(err)
+  }
+}
+
+export const postNewFieldApi = async (id,data,handleClickOpen,handleClose)=>{
+  try{
+    await axios.post(`http://192.168.100.181:8888/products/${id}/fields`,data)
+   .then((res)=>{
+        console.log(res.data)
+    })
+    handleClickOpen(id)
+    handleClose()
+    }
+  
+  catch(err){
+    console.log(err)
+  }
+}
+
+export const DeleteExistingField=async(productid,fieldid,handleClickOpen)=>{
+  try{
+    await axios.delete(`http://192.168.100.181:8888/products/${productid}/fields/${fieldid}`)
+  .then((res)=>{
+        console.log(res.data)
+    })
+
+
+    handleClickOpen(productid)
+
+    }
+  
+  catch(err){
+    console.log(err)
+  }
+}

@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React from 'react';
+import React,{useEffect} from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -17,9 +17,28 @@ import { Button, Stack } from '@mui/material';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import { IconTrash } from '@tabler/icons';
+import { DeleteExistingField } from 'API/Products/apis';
 
 // eslint-disable-next-line react/prop-types
-const EditModal = ({ editOpen, handleviewClose, editrows, handleOpen }) => {
+const EditModal = ({ editOpen, handleviewClose, editrows, handleOpen ,productId,post,AddMoreFields,setAddMoreFields,handleClickOpen}) => {
+ 
+  console.log("productId :",productId);
+  console.log("postData :",post);
+
+  useEffect(()=>{
+    
+    setAddMoreFields(
+      {...AddMoreFields,fields:post,productId:productId}
+    )
+  },[post])
+
+console.log("Add more fields",AddMoreFields);
+
+
+const handleDelete = (id) => {
+  DeleteExistingField(productId,id,handleClickOpen)
+}
+
   return (
     <Dialog open={editOpen} onClose={handleviewClose} maxWidth='100%'>
       <DialogTitle variant="h3" sx={{ m: 0, p: 2 }} id="customized-dialog-title">
@@ -48,28 +67,29 @@ const EditModal = ({ editOpen, handleviewClose, editrows, handleOpen }) => {
             <TableHead>
               <TableRow>
                 <TableCell align="left">Field Name</TableCell>
-                <TableCell align="left">Type</TableCell>
+                <TableCell align="left">Display Name</TableCell>
                 <TableCell align="left">Mandatory</TableCell>
                 <TableCell align="center">Delete</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {editrows.map((row) => (
-                <TableRow key={row.name} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+              {Array.isArray(editrows)&&editrows.map((row) => (
+                <TableRow key={row.display_field_name} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
 
                   <TableCell component="th" scope="row" align="left">
-                    {row.name}
+                    {row.field_name}
                   </TableCell>
-                  <TableCell align="left">{row.calories}</TableCell>
+                  <TableCell align="left">{row.display_field_name}</TableCell>
                   <TableCell>
-                    <Select sx={{ width: '80%' }} >
-                      {row.fat.map((item,itemIndex)=>(
-                      <MenuItem value={item} key={itemIndex}>{item}</MenuItem>
-                      ))}
+                    <Select sx={{ width: '80%' }} 
+                    value={row.value_required}
+                    >
+                      <MenuItem value={true} >True</MenuItem>
+                      <MenuItem value={false}>False</MenuItem>
                     </Select>
                   </TableCell>
                   <TableCell align="center" sx={{ color: '#D84646' }}>
-                    {<IconTrash />}
+                    {<IconTrash onClick={()=>handleDelete(row.field_id)}/>}
                   </TableCell>
                 </TableRow>
               ))}
