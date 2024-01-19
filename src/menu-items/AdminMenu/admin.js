@@ -44,10 +44,10 @@ const AdminUtils = {
       breadcrumbs: false
     },
     {
-      id: 'create group',
-      title: 'Create Group',
+      id: 'Add user to group',
+      title: 'Add User to Groups',
       type: 'item',
-      url: '/Admin/CreateGroup',
+      url: '/Admin/Addusergroup',
       icon: icons.IconUsers,
       breadcrumbs: false
     },

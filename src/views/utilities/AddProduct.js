@@ -25,7 +25,7 @@ const AddProduct = () => {
   const [Data, setData] = useState({
     id: '',
     name: '',
-    type: '', 
+    type: '',
     required: ''
   });
 
@@ -52,7 +52,6 @@ const AddProduct = () => {
   const [editOpen, setEditOpen] = useState(false);
   const handleClickOpen = (id) => {
     console.log(id);
-    const filtered=null
     setEditOpen(true);
   };
   const handleviewClose = () => {
@@ -65,7 +64,7 @@ const AddProduct = () => {
     fields: ''
   });
 
- 
+
 
   const handleCellEditStop = React.useCallback((params, event) => {
     event.defaultMuiPrevented = true;
@@ -176,7 +175,7 @@ const AddProduct = () => {
       type: 'number',
       width: 30,
       renderCell: (params) => (
-        <IconButton aria-label="delete" onClick={() =>{ 
+        <IconButton aria-label="delete" onClick={() =>{
           console.log(params);
           handleDelete(params.row._id)}} color="error">
           {' '}
@@ -276,13 +275,11 @@ const handleSubmit = (e) => {
   e.preventDefault()
   PostApi(PostData,getApi,setRows,setData,setPostData,setPost,setTableRows,handleClick)
 }
-  
+
 
   return (
     <SubCard title="Add Product">
       {/* Add field modal */}
-
-      
 
       <FieldModal
         open={open}
@@ -310,7 +307,7 @@ const handleSubmit = (e) => {
       <Grid container xl={12}>
         <Grid item xl={6} md={6} xs={12}>
           <TextField size="large"
-           label="Product Name" 
+           label="Product Name"
            fullWidth
            value={PostData.product_name||""}
             onChange={(e) => handleDataChange('Name', e.target.value, null)} />
@@ -391,7 +388,7 @@ const handleSubmit = (e) => {
         </Grid>
         :
         <p>Loading....</p>}
-        
+
       </Grid>
       </form>
       {/* Edit Modal */}
