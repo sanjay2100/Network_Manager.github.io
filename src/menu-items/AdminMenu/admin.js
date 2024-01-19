@@ -44,8 +44,8 @@ const AdminUtils = {
       breadcrumbs: false
     },
     {
-      id: 'create group',
-      title: 'Create Group',
+      id: 'Manage group',
+      title: 'Manage Group',
       type: 'item',
       url: '/Admin/CreateGroup',
       icon: icons.IconUsers,
