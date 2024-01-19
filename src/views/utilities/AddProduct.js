@@ -56,16 +56,13 @@ const AddProduct = () => {
   const handleClose = () =>{
     setOpen(false);
     setOpenAddMore(false);
-  } 
+  }
   //   edit Modal
   const [editOpen, setEditOpen] = useState(false);
   const [EditData, setEditData] = useState([]);
   const handleClickOpen = (id) => {
     console.log(id);
-    console.log(rows);
-    
-   getById(id,setEditData)
-    console.log(EditData);
+    const filtered=null
     setEditOpen(true);
   };
   const handleviewClose = () => {
@@ -79,6 +76,8 @@ const AddProduct = () => {
     display_name: '',
     fields: ''
   });
+
+
 
   const handleCellEditStop = React.useCallback((params, event) => {
     event.defaultMuiPrevented = true;
@@ -158,7 +157,7 @@ const AddProduct = () => {
   console.log(editrows);
 
   // const editrows = [
-  //  
+  //
 
   //   createTableData('Date', 'date', ['false', 'true']),
   //   createTableData('Email', 'email', ['false', 'true']),
@@ -204,14 +203,9 @@ const AddProduct = () => {
       type: 'number',
       width: 30,
       renderCell: (params) => (
-        <IconButton
-          aria-label="delete"
-          onClick={() => {
-            console.log(params);
-            handleDelete(params.row._id);
-          }}
-          color="error"
-        >
+        <IconButton aria-label="delete" onClick={() =>{
+          console.log(params);
+          handleDelete(params.row._id)}} color="error">
           {' '}
           <IconTrash />
         </IconButton>
@@ -308,10 +302,11 @@ const AddProduct = () => {
 
   console.log(PostData);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    PostApi(PostData, getApi, setRows, setData, setPostData, setPost, setTableRows, handleClick);
-  };
+const handleSubmit = (e) => {
+  e.preventDefault()
+  PostApi(PostData,getApi,setRows,setData,setPostData,setPost,setTableRows,handleClick)
+}
+
 
   return (
     <SubCard title="Add Product">
@@ -350,95 +345,98 @@ const AddProduct = () => {
 
       {/* End of add field modal */}
       <form onSubmit={handleSubmit}>
-        <Snackbar open={OpenAlert} autoHideDuration={6000} onClose={handleAlertClose} message="Product Added successfully" />
-        <Grid container xl={12}>
+      <Snackbar
+        open={OpenAlert}
+        autoHideDuration={6000}
+        onClose={handleAlertClose}
+        message="Product Added successfully"
+      />
+      <Grid container xl={12}>
+        <Grid item xl={6} md={6} xs={12}>
+          <TextField size="large"
+           label="Product Name"
+           fullWidth
+           value={PostData.product_name||""}
+            onChange={(e) => handleDataChange('Name', e.target.value, null)} />
+        </Grid>
+
+        <Grid container sx={{ mt: 4 }} xl={12} justifyContent="space-between">
           <Grid item xl={6} md={6} xs={12}>
             <TextField
               size="large"
-              label="Product Name"
+              label="Product display name"
+              value={PostData.display_name||""}
               fullWidth
-              value={PostData.product_name || ''}
-              onChange={(e) => handleDataChange('Name', e.target.value, null)}
+              onChange={(e) => handleDataChange('displayName', e.target.value, null)}
             />
+            <Stack direction="row" justifyContent="flex-end" width="100%">
+              <Button sx={{ width: 'fit-content' }} color="secondary" onClick={handleOpen}>
+                Add fields
+              </Button>
+            </Stack>
           </Grid>
-
-          <Grid container sx={{ mt: 4 }} xl={12} justifyContent="space-between">
-            <Grid item xl={6} md={6} xs={12}>
-              <TextField
-                size="large"
-                label="Product display name"
-                value={PostData.display_name || ''}
-                fullWidth
-                onChange={(e) => handleDataChange('displayName', e.target.value, null)}
-              />
-              <Stack direction="row" justifyContent="flex-end" width="100%">
-                <Button sx={{ width: 'fit-content' }} color="secondary" onClick={handleOpen}>
-                  Add fields
+          <Grid item xl={6} sx={{ width: { xl: 'fit-content', md: '100%' }, height: { md: '5vh', xl: '10vh', xs: '10vh' } }}>
+            <Stack direction="column" justifyContent="flex-end" height="100%">
+              <Stack direction="row" justifyContent="flex-end" alignItems="flex-end" spacing={2}>
+                <Button variant="contained" color="secondary" type='submit' >
+                  Submit
                 </Button>
               </Stack>
-            </Grid>
-            <Grid item xl={6} sx={{ width: { xl: 'fit-content', md: '100%' }, height: { md: '5vh', xl: '10vh', xs: '10vh' } }}>
-              <Stack direction="column" justifyContent="flex-end" height="100%">
-                <Stack direction="row" justifyContent="flex-end" alignItems="flex-end" spacing={2}>
-                  <Button variant="contained" color="secondary" type="submit">
-                    Submit
-                  </Button>
-                </Stack>
-              </Stack>
-            </Grid>
+            </Stack>
           </Grid>
-          {/* Product list start */}
-          <Typography variant="h4" m={2}>
-            Product List
-          </Typography>
-          <Box p={1}>
-            <Button onClick={handleClickedit} onMouseDown={handleMouseDown} disabled={!selectedCellParams} variant="outlined">
-              {cellMode === 'edit' ? 'Save' : 'Edit'}
-            </Button>
-            <Button onClick={handleClose} onMouseDown={handleMouseDown} disabled={cellMode === 'view'} variant="outlined" sx={{ ml: 1 }}>
-              Cancel
-            </Button>
-          </Box>
-          {rows['products'] ? (
-            <Grid item style={{ height: 400, width: '100%' }}>
-              <DataGrid
-                rows={rows['products']}
-                columns={columns}
-                onCellKeyDown={handleCellKeyDown}
-                cellModesModel={cellModesModel}
-                disableRowSelectionOnClick
-                onCellEditStop={handleCellEditStop}
-                onCellModesModelChange={(model) => setCellModesModel(model)}
-                // sx={{height: "92%"}}
-                // slots={{
-                //   toolbar: EditToolbar,
-                // }}
-                getRowId={(row) => row._id}
-                initialState={{
-                  pagination: {
-                    paginationModel: { page: 0, pageSize: 5 }
-                  }
-                }}
-                pageSizeOptions={[5, 10]}
-                // checkboxSelection
-                slotProps={{
-                  toolbar: {
-                    cellMode,
-                    selectedCellParams,
-                    setSelectedCellParams,
-                    cellModesModel,
-                    setCellModesModel
-                  },
-                  cell: {
-                    onFocus: handleCellFocus
-                  }
-                }}
-              />
-            </Grid>
-          ) : (
-            <p>Loading....</p>
-          )}
         </Grid>
+        {/* Product list start */}
+        <Typography variant="h4" m={2}>
+          Product List
+        </Typography>
+        <Box p={1}>
+          <Button onClick={handleClickedit} onMouseDown={handleMouseDown} disabled={!selectedCellParams} variant="outlined">
+            {cellMode === 'edit' ? 'Save' : 'Edit'}
+          </Button>
+          <Button onClick={handleClose} onMouseDown={handleMouseDown} disabled={cellMode === 'view'} variant="outlined" sx={{ ml: 1 }}>
+            Cancel
+          </Button>
+        </Box>
+        {rows['products']?<Grid item style={{ height: 400, width: '100%' }}>
+          <DataGrid
+            rows={rows['products']}
+            columns={columns}
+            onCellKeyDown={handleCellKeyDown}
+            cellModesModel={cellModesModel}
+            disableRowSelectionOnClick
+            onCellEditStop={handleCellEditStop}
+            onCellModesModelChange={(model) => setCellModesModel(model)}
+            // sx={{height: "92%"}}
+            // slots={{
+            //   toolbar: EditToolbar,
+            // }}
+            getRowId={(row) => row._id}
+            initialState={{
+              pagination: {
+                paginationModel: { page: 0, pageSize: 5 }
+              }
+            }}
+            pageSizeOptions={[5, 10]}
+            // checkboxSelection
+            slotProps={{
+              toolbar: {
+                cellMode,
+                selectedCellParams,
+                setSelectedCellParams,
+                cellModesModel,
+                setCellModesModel
+              },
+              cell: {
+                onFocus: handleCellFocus
+              }
+
+            }}
+          />
+        </Grid>
+        :
+        <p>Loading....</p>}
+
+      </Grid>
       </form>
       {/* Edit Modal */}
 

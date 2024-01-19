@@ -70,19 +70,19 @@ const ViewGroup = () => {
   };
   //   list users
   const columns = [
-    { field: 'id', headerName: 'Sno', width: 70 },
+    { field: 'id', headerName: 'id', width: 70 },
     { field: 'firstName', headerName: 'First name', width: 130 },
-    { field: 'lastName', headerName: 'Last name', width: 130 },
+    // { field: 'lastName', headerName: 'Last name', width: 130 },
     {
       field: 'designation',
       headerName: 'Designation',
       width: 150
     },
-    {
-      field: 'State',
-      headerName: 'State',
-      width: 150
-    },
+    // {
+    //   field: 'State',
+    //   headerName: 'State',
+    //   width: 150
+    // },
     {
       field: 'Action',
       headerName: 'Action',

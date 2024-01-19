@@ -14,6 +14,7 @@ const DashboardDefault = Loadable(lazy(() => import('views/AdminDashboard/Defaul
 // utilities routing
 const UtilsAccessManagement = Loadable(lazy(() => import('views/utilities/AccessManagement')));
 const UtilsCreateGroup = Loadable(lazy(() => import('views/utilities/CreateGroup')));
+const AdduserGroup = Loadable(lazy(() => import('views/utilities/AdduserGroup')));
 const ViewGroup = Loadable(lazy(() => import('views/utilities/Components/ViewGroup')));
 const UtilsAddDataPoints = Loadable(lazy(() => import('views/utilities/DataPoints')));
 const ViewDatapoints = Loadable(lazy(() => import('views/utilities/ViewAddPoints')));
@@ -93,6 +94,16 @@ const AdminRoute = {
         {
           path: 'CreateGroup',
           element: <UtilsCreateGroup />,
+          breadcrumbs: true
+        }
+      ]
+    },
+    {
+      path: 'Admin',
+      children: [
+        {
+          path: 'Addusergroup',
+          element: <AdduserGroup />,
           breadcrumbs: true
         }
       ]
