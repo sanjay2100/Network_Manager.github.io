@@ -5,7 +5,7 @@ import SubCard from 'ui-component/cards/SubCard';
 import IconButton from '@mui/material/IconButton';
 import { IconEye, IconPencil, IconTrash } from '@tabler/icons';
 import Box from '@mui/material/Box';
-
+import Snackbar from '@mui/material/Snackbar';
 import FieldModal from './Components/AddProduct/FieldModal';
 import EditModal from './Components/AddProduct/EditModal';
 import { PostApi, getApi,deleteApi } from 'API/Products/apis';
@@ -18,23 +18,41 @@ const AddProduct = () => {
   const [open, setOpen] = useState(false);
   const [post, setPost] = useState([]);
   const [TableRows, setTableRows] = useState([]);
+
   const [selectedCellParams, setSelectedCellParams] = useState(null);
   const [cellModesModel, setCellModesModel] = useState({});
   const[Error,setError]=useState(false)
   const [Data, setData] = useState({
     id: '',
     name: '',
-    type: '',
-    
+    type: '', 
     required: ''
   });
+
+  const[OpenAlert, setOpenAlert] = useState(false)
+
+  const handleClick = () => {
+    setOpenAlert(true);
+  };
+
+  const handleAlertClose = () => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setOpenAlert(false);
+  };
+
+  // const [Product, setProduct] = useState({})
   // const[getData,setGetData]=useState([])
   const dataref = useRef();
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   //   edit Modal
   const [editOpen, setEditOpen] = useState(false);
-  const handleClickOpen = () => {
+  const handleClickOpen = (id) => {
+    console.log(id);
+    const filtered=null
     setEditOpen(true);
   };
   const handleviewClose = () => {
@@ -145,10 +163,10 @@ const AddProduct = () => {
       headerName: 'Action',
       type: 'number',
       width: 55,
-      renderCell: () => (
-        <IconButton aria-label="view" onClick={handleClickOpen} color="success">
+      renderCell: (params) => (
+        <IconButton aria-label="view" onClick={()=>handleClickOpen(params.row._id)} color="success">
           {' '}
-          <IconEye />
+          <IconEye  />
         </IconButton>
       )
     },
@@ -204,7 +222,7 @@ const AddProduct = () => {
     if (type === 'field') {
       console.log(value);
       console.log(value.name);
-      setData({ ...Data, name: value.name, type: value.type, _id: value._id ,display_name:value.display_name});
+      setData({ ...Data, name: value.name, type: value.type, id: value._id ,display_name:value.display_name});
       console.log(Data);
     } else {
       console.log(value);
@@ -235,7 +253,7 @@ const AddProduct = () => {
 
   const handleAddData = (e) => {
     e.preventDefault();
-    const updataedData = [...post, Data];
+    const updataedData = [...post,{field_obj_id: Data.id,value_required:Data.required}];
 
     setTableRows([...TableRows, createData(Data.name, Data.type, Data.required, 'x')]);
     console.log(TableRows);
@@ -250,17 +268,21 @@ const AddProduct = () => {
 
   useEffect(() => {
     setPostData({ ...PostData, fields: post });
-  }, []);
+  }, [post]);
+
+  console.log(PostData);
 
 const handleSubmit = (e) => {
   e.preventDefault()
-  PostApi(PostData,getApi,setRows)
+  PostApi(PostData,getApi,setRows,setData,setPostData,setPost,setTableRows,handleClick)
 }
   
 
   return (
     <SubCard title="Add Product">
       {/* Add field modal */}
+
+      
 
       <FieldModal
         open={open}
@@ -279,9 +301,19 @@ const handleSubmit = (e) => {
 
       {/* End of add field modal */}
       <form onSubmit={handleSubmit}>
+      <Snackbar
+        open={OpenAlert}
+        autoHideDuration={6000}
+        onClose={handleAlertClose}
+        message="Product Added successfully"
+      />
       <Grid container xl={12}>
         <Grid item xl={6} md={6} xs={12}>
-          <TextField size="large" label="Product Name" fullWidth onChange={(e) => handleDataChange('Name', e.target.value, null)} />
+          <TextField size="large"
+           label="Product Name" 
+           fullWidth
+           value={PostData.product_name||""}
+            onChange={(e) => handleDataChange('Name', e.target.value, null)} />
         </Grid>
 
         <Grid container sx={{ mt: 4 }} xl={12} justifyContent="space-between">
@@ -289,6 +321,7 @@ const handleSubmit = (e) => {
             <TextField
               size="large"
               label="Product display name"
+              value={PostData.display_name||""}
               fullWidth
               onChange={(e) => handleDataChange('displayName', e.target.value, null)}
             />

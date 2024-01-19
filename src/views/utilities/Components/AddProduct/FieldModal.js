@@ -154,7 +154,7 @@ const FieldModal = ({ open, handleChange, deleteAddedData, handleAddData, handle
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {TableRows.map((row, index) => (
+                  {Array.isArray(TableRows)&&TableRows.length>0&&TableRows.map((row, index) => (
                     <TableRow
                       draggable
                       onDragStart={handleDragStart(index)}

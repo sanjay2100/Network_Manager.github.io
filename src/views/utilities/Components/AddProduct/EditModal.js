@@ -21,7 +21,7 @@ import { IconTrash } from '@tabler/icons';
 // eslint-disable-next-line react/prop-types
 const EditModal = ({ editOpen, handleviewClose, editrows, handleOpen }) => {
   return (
-    <Dialog open={editOpen} onClose={handleviewClose}>
+    <Dialog open={editOpen} onClose={handleviewClose} maxWidth='100%'>
       <DialogTitle variant="h3" sx={{ m: 0, p: 2 }} id="customized-dialog-title">
         Product title (Product display name)
       </DialogTitle>

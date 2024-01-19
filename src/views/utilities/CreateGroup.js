@@ -1,4 +1,4 @@
-import React from 'react';
+import React ,{useState,useEffect}from 'react';
 // import { useNavigate } from 'react-router-dom';
 import SubCard from 'ui-component/cards/SubCard';
 import { Grid, TextField, Button, Snackbar } from '@mui/material';
@@ -10,6 +10,13 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 });
 
 function CreateGroup() {
+
+  const[SelectedRows,setSelectedRows]=useState("")
+
+  useEffect(() => {
+    console.log(SelectedRows);
+  }, [SelectedRows])
+  
 //   const navigate = useNavigate();
   const columns = [
     { field: 'id', headerName: 'Sno', width: 70 },
@@ -53,6 +60,7 @@ function CreateGroup() {
     setOpen(false);
   };
 
+ 
   return (
     <SubCard title="Create Group">
       <Snackbar open={open} autoHideDuration={2000} onClose={handleClose} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
@@ -80,6 +88,15 @@ function CreateGroup() {
             }}
             pageSizeOptions={[5, 10]}
             checkboxSelection
+            
+            onRowSelectionModelChange={(ids) => {
+              const selectedIDs = new Set(ids);
+              const selectedRows = rows.filter((row) =>
+                selectedIDs.has(row.id)
+              );
+              setSelectedRows(selectedRows);
+            }}
+
           />
         </Grid>
         <Grid container xl={12} justifyContent="flex-end">

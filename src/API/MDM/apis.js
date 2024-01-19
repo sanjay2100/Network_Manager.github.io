@@ -5,7 +5,7 @@ axios.defaults.baseURL="http://192.168.100.181:8888"
 const PostApi =  async (PostData,handleClick,setData,ref,handleErrOpen) => {
 
     try {
-         await axios.post(`/fields/`, PostData)
+         await axios.post(`/fields`, PostData)
          .then(res =>{
             if(res.status===200){
 
@@ -19,6 +19,7 @@ const PostApi =  async (PostData,handleClick,setData,ref,handleErrOpen) => {
     
                     },
                 })
+           
                 
                 // setTimeout(()=>{
                 //     window.location.reload()
