@@ -56,6 +56,7 @@ const AddProduct = () => {
   const handleClose = () =>{
     setOpen(false);
     setOpenAddMore(false);
+    setTableRows([])
   } 
   //   edit Modal
   const [editOpen, setEditOpen] = useState(false);
@@ -289,6 +290,7 @@ const AddProduct = () => {
 
   const handleAddData = (e) => {
     e.preventDefault();
+    console.log("tr: ",TableRows);
     const updataedData = [...post, { field_obj_id: Data.id, value_required: Data.required }];
 
     setTableRows([...TableRows, createData(Data.name, Data.type, Data.required, 'x')]);

@@ -19,7 +19,7 @@ export const PostApi = async (data, getApi, setRows,setData,setPostData,setTable
       display_name: '',
       fields: []
     })
-    setTableRows([])
+    window.location.reload()
     handleClick()
   } catch (error) {
     console.log(error);
@@ -77,6 +77,7 @@ export const postNewFieldApi = async (id,data,handleClickOpen,handleClose)=>{
    .then((res)=>{
         console.log(res.data)
     })
+    window.location.reload()
     handleClickOpen(id)
     handleClose()
     }
