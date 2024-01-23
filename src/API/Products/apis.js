@@ -2,11 +2,7 @@ import axios from 'axios';
 
 
 
-const url=process.env.REACT_APP_FIELDS_API_URL;
-
-axios.defaults.baseURL = url
-
-
+axios.defaults.baseURL = process.env.REACT_APP_FIELDS_API_URL;
 
 export const PostApi = async (data, getApi, setRows, setData, setPostData, setTableRows, handleClick) => {
   try {

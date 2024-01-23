@@ -1,8 +1,6 @@
 import axios from "axios";
 
-const url=process.env.REACT_APP_FIELDS_API_URL
-
-axios.defaults.baseURL=url
+axios.defaults.baseURL =process.env.REACT_APP_FIELDS_API_URL
 
 const PostApi =  async (PostData,handleClick,setData,ref,handleErrOpen) => {
 
@@ -29,10 +27,10 @@ const PostApi =  async (PostData,handleClick,setData,ref,handleErrOpen) => {
                 handleErrOpen()
             }
          })
-        
+
         console.log(PostData);
 
-      
+
     }
     catch (err) {
         console.log(err);

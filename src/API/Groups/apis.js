@@ -1,8 +1,6 @@
 import axios from 'axios';
 
-const url= process.env.REACT_APP_GROUP_URL
-
-axios.defaults.baseURL =url;
+axios.defaults.baseURL = process.env.REACT_APP_GROUP_URL
 
 export const CreateGroup = async (data, handlesnackClick, setPostData) => {
   try {
