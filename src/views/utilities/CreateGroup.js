@@ -36,7 +36,7 @@ function AdduserGroup() {
     console.log(SelectedRows);
     if(SelectedRows!==''){
       SelectedRows.forEach(element => {
-        setMemberData({ ...memberData, members: [...memberData.members,element.user_id ] });
+        setMemberData({ ...memberData, members: [...memberData.members,element._id ] });
       });
     }
   }, [SelectedRows]);
@@ -320,7 +320,7 @@ function AdduserGroup() {
             checkboxSelection
             onRowSelectionModelChange={(ids) => {
               const selectedIDs = new Set(ids);
-              const selectedRows = userRows.filter((row) => selectedIDs.has(row.user_id));
+              const selectedRows = userRows.filter((row) => selectedIDs.has(row._id));
               setSelectedRows(selectedRows);
             }}
           />

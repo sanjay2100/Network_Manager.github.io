@@ -1,13 +1,11 @@
 import axios from "axios";
 
+
 const url=process.env.REACT_APP_FIELDS_API_URL
-
-axios.defaults.baseURL=url
-
 const PostApi =  async (PostData,handleClick,setData,ref,handleErrOpen) => {
 
     try {
-         await axios.post(`/fields`, PostData)
+         await axios.post(`${url}/fields`, PostData)
          .then(res =>{
             if(res.status===200){
 
@@ -43,7 +41,7 @@ const PostApi =  async (PostData,handleClick,setData,ref,handleErrOpen) => {
 
 export const getApi= async(setGetData,setError)=>{
     try{
-        await axios.get('/fields')
+        await axios.get(`${url}/fields`)
         .then(res=>setGetData([res.data]))
 
     }
@@ -56,7 +54,7 @@ export const getApi= async(setGetData,setError)=>{
 
 export const getById=async(setData,id,setError) => {
     try{
-        await axios.get(`/fields/${id}`)
+        await axios.get(`${url}/fields/${id}`)
         .then(res=>setData([res.data]))
 
     }
@@ -69,7 +67,7 @@ export const getById=async(setData,id,setError) => {
 export const putAPI=async(id,data,handleClose)=>{
     try{
        delete data[0]._id;
-        await axios.put(`/fields/${id}`,data[0])
+        await axios.put(`${url}/fields/${id}`,data[0])
       .then(res=>console.log(res))
       handleClose()
     }
@@ -80,7 +78,7 @@ export const putAPI=async(id,data,handleClose)=>{
 
 export const deleteAPI=async(id,getApi,setData,setError)=>{
     try{
-        await axios.delete(`/fields/${id}`)
+        await axios.delete(`${url}/fields/${id}`)
       .then(res=>console.log(res))
       getApi(setData,setError)
     }

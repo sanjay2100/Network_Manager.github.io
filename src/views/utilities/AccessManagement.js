@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useEffect,useState} from 'react';
 import SubCard from 'ui-component/cards/SubCard';
 import { Grid, TextField, Button } from '@mui/material';
 import Autocomplete from '@mui/material/Autocomplete';
@@ -14,6 +14,8 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import { Stack } from '@mui/system';
+import { GetGroups } from 'API/Groups/apis';
+import { getApi } from 'API/Products/apis';
 
 const AccessManagement = () => {
   const dataref = React.useRef();
@@ -32,10 +34,10 @@ const AccessManagement = () => {
   const handleChange = (field, value) => {
     switch (field) {
       case 'group':
-        setData({ ...Data, Group: group[value].label });
+        setData({ ...Data, group: group[value].name });
         break;
       case 'product':
-        setData({ ...Data, Product: Product[value].label });
+        setData({ ...Data, Product: Product.products[value].display_name });
         break;
       case 'field':
         setFieldAccess({ ...FieldAccess, Field: Product[0].field[value] });
@@ -49,19 +51,32 @@ const AccessManagement = () => {
     //console.log(Data, FieldAccess);
   };
 
-  const group = [
-    { label: 'DA', year: 1994 },
-    { label: 'TM', year: 1972 },
-    { label: 'SH', year: 1974 },
-    { label: 'AGENT', year: 2008 }
-  ];
+  const [group,setGroup]=useState(null)
+  const [Product,setProduct]=useState(null)
 
-  const Product = [
-    { label: 'SBI CSP', field: ['Name', 'Aadhar', 'Pan', 'Phone'] },
-    { label: 'HDFC', field: ['Name', 'Aadhar', 'Pan', 'Phone'] },
-    { label: 'AXIS', field: ['Name', 'Aadhar', 'Pan', 'Phone'] },
-    { label: 'IOB', field: ['Name', 'Aadhar', 'Pan', 'Phone'] }
-  ];
+  const getGroup=()=>{
+    GetGroups(setGroup)
+    getApi(setProduct)
+  }
+
+  console.log(Product );
+
+  useEffect(()=>{
+    getGroup()
+  },[])
+  // const group = [
+  //   { label: 'DA', year: 1994 },
+  //   { label: 'TM', year: 1972 },
+  //   { label: 'SH', year: 1974 },
+  //   { label: 'AGENT', year: 2008 }
+  // ];
+
+  // const Product = [
+  //   { label: 'SBI CSP', field: ['Name', 'Aadhar', 'Pan', 'Phone'] },
+  //   { label: 'HDFC', field: ['Name', 'Aadhar', 'Pan', 'Phone'] },
+  //   { label: 'AXIS', field: ['Name', 'Aadhar', 'Pan', 'Phone'] },
+  //   { label: 'IOB', field: ['Name', 'Aadhar', 'Pan', 'Phone'] }
+  // ];
 
   function createData(name, calories, fat, carbs, protein) {
     return { name, calories, fat, carbs, protein };
@@ -90,15 +105,16 @@ const AccessManagement = () => {
 
   return (
     <Grid container xl={12}>
-      <Grid item xl={12}>
+      <Grid item xl={12} lg={12} sm={12} xs={12}>
         <SubCard title="Access Management">
           <Grid container xl={10} spacing={2}>
             <Grid item xl={4} md={6} xs={12}>
               <Autocomplete
                 disablePortal
                 id="combo-box-demo"
-                value={Data.Group}
-                options={group}
+                value={Data.name}
+                getOptionLabel={(dat)=>dat.name}
+                options={Array.isArray(group)?group:[]}
                 renderInput={(params) => <TextField {...params} label="Group" />}
                 fullWidth
                 onChange={(e) => handleChange('group', e.target.value)}
@@ -110,7 +126,8 @@ const AccessManagement = () => {
                 disablePortal
                 id="combo-box-demo"
                 value={Data.Product}
-                options={Product}
+                getOptionLabel={(dat)=>dat.display_name}
+                options={Product&&Array.isArray(Product.products)?Product.products:[]}
                 renderInput={(params) => <TextField {...params} ref={dataref} label="Product" fullWidth />}
                 fullWidth
                 onChange={(e) => handleChange('product', e.target.value)}
@@ -124,7 +141,7 @@ const AccessManagement = () => {
                 disablePortal
                 value={FieldAccess.Field}
                 id="combo-box-demo"
-                options={Product[0].field}
+                options={Array.isArray(Product)?Product[0].field:[]}
                 renderInput={(params) => <TextField value={FieldAccess.Field} {...params} label="Field" />}
                 fullWidth
                 onChange={(e) => handleChange('field', e.target.value)}
