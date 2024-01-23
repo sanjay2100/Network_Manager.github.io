@@ -1,5 +1,5 @@
 import React ,{useState,useEffect}from 'react';
-
+import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
 // material-ui
 import { Grid, Button } from '@mui/material';
 import Typography from '@mui/material/Typography';
@@ -18,8 +18,8 @@ import DialogTitle from '@mui/material/DialogTitle';
 // import SubCard from 'ui-component/cards/SubCard';
 import MainCard from 'ui-component/cards/MainCard';
 import { gridSpacing } from 'store/constant';
-import { IconPencil, IconTrash } from '@tabler/icons';
-import { GetGroups } from 'API/Groups/apis';
+import { IconPencil } from '@tabler/icons';
+import { DeleteGroup, GetGroups } from 'API/Groups/apis';
 
 // mui Accordion
 const Accordion = styled((props) => <MuiAccordion disableGutters elevation={0} square {...props} />)(({ theme }) => ({
@@ -31,6 +31,8 @@ const Accordion = styled((props) => <MuiAccordion disableGutters elevation={0} s
     display: 'none'
   }
 }));
+
+
 
 
 const AccordionSummary = styled((props) => (
@@ -64,6 +66,18 @@ const ViewGroup = () => {
 
   // Variable for storing group
   const [Group,setGroup]=useState(null)
+
+
+
+  //delete user from a group
+const handleUserDelete=(grpId,userId)=>{
+  console.log(grpId,userId)
+}
+
+//delete a group
+const handleGroupDelete=(grpId)=>{
+  DeleteGroup(grpId ,setGroup)
+}
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -102,7 +116,7 @@ useEffect(()=>{
 
 console.log(rows);
 
-console.log("backendurl ",process.env.REACT_APP_BASE_URL);
+//console.log("backendurl ",process.env.REACT_APP_BASE_URL);
 
 
   // const rows = [
@@ -135,27 +149,27 @@ console.log("backendurl ",process.env.REACT_APP_BASE_URL);
                 id="panel1d-header"
                 style={{ display: 'flex', justifyContent: 'space-between' }}
               >
-                <Typography variant="h4">{item.group_name}</Typography>
+                <Typography variant="h4">{item.name}</Typography>
                 <IconPencil color="#2196F3" onClick={handleClickOpen} />
               </AccordionSummary>
               <AccordionDetails>
                 <table style={{width:'100%'}}>
                   <thead>
                     <tr>
-                      <th style={{textAlign:'left',padding:'5px'}}>User_id</th>
-                      <th></th>
+                      <th style={{textAlign:'left',paddingBlock:'10px',borderBottom:'2px solid #DFDFDF'}}>User_id</th>
+                      <th style={{borderBottom:'2px solid #DFDFDF'}}></th>
                     </tr>
                   </thead>
                   <tbody>
                     {item.members.map((tab,tabindex)=>(
                       <tr key={tabindex}>
-                        <td style={{padding:'5px'}}>{tab}</td>
-                        <td style={{color:'red'}}>{<IconTrash/>}</td>
+                        <td style={{paddingBlock:'10px',borderBottom:'1px solid #DFDFDF'}}>{tab}</td>
+                        <td style={{color:'red',textAlign:"right",borderBottom:'1px solid #DFDFDF'}} ><RemoveCircleIcon sx={{cursor:'pointer'}} onClick={handleUserDelete(item.group_id,tab)}/></td>
                       </tr>
                     ))}
                   </tbody>
                  </table>
-                <Button variant="contained" color="error" sx={{ margin: '15px', float: 'right' }}>
+                <Button variant="contained" color="error" sx={{ margin: '15px', float: 'right' }} onClick={()=>handleGroupDelete(item._id)}>
                   Delete group
                 </Button>
               </AccordionDetails>

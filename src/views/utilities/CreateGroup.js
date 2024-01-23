@@ -171,7 +171,7 @@ function AdduserGroup() {
   const[memberData,setMemberData]=useState({members:[]})
 
   const createGroup=()=>{
-     const grpId=SelectedGroup.group_id
+     const grpId=SelectedGroup._id;
      AddUser(grpId,memberData,setGetData,handleClick,handleErrClick)
      SetSelectedGroup([])
 
@@ -259,7 +259,7 @@ function AdduserGroup() {
             disablePortal
             id="combo-box-demo"
             options={getData?getData:[]}
-            getOptionLabel={ (option) => option.group_name}
+            getOptionLabel={ (option) => option.name}
 
             onChange={(event, selectedOption) => SetSelectedGroup(selectedOption)}
             sx={{ width: 300 }}
@@ -284,16 +284,17 @@ function AdduserGroup() {
           </Button>
         </Grid> */}
         <Grid container mt={1} xl={12} sm={12} xs={12} spacing={1}>
-        <Grid item xl={12} md={12} sm={12} xs={12}>
+        <Grid item xl={6} md={12} sm={12} xs={12}>
           <DataGrid
             rows={Array.isArray(Arg)?Arg:[]}
             columns={columns}
+            sx={{height:'20rem'}}
             initialState={{
               pagination: {
                 paginationModel: { page: 0, pageSize: 5 }
               }
             }}
-
+           
             pageSizeOptions={[5, 10]}
             checkboxSelection={false}
             getRowId={(row) => row.id}
@@ -304,11 +305,12 @@ function AdduserGroup() {
             }}
           />
         </Grid>
-        <Grid item mt={1} xl={12} md={12} sm={12} xs={12}>
+        <Grid item mt={{xl:0,lg:1,md:1}} xl={6} md={12} sm={12} xs={12}>
           <DataGrid
             rows={Array.isArray(userRows)?userRows:[]}
             columns={userColumns}
-            getRowId={(row) => row.user_id}
+            sx={{height:'20rem'}}
+            getRowId={(row) => row._id}
             initialState={{
               pagination: {
                 paginationModel: { page: 0, pageSize: 5 }

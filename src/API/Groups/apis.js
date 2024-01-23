@@ -1,5 +1,8 @@
 import axios from 'axios';
-axios.defaults.baseURL = process.env.REACT_APP_BASE_URL;
+
+const url= process.env.REACT_APP_GROUP_URL
+
+axios.defaults.baseURL =url;
 
 export const CreateGroup = async (data, handlesnackClick, setPostData) => {
   try {
@@ -47,6 +50,19 @@ export const getAllUsers=async(setUserRows)=>{
       setUserRows(res.data);
       console.log(res.data);
     })
+  }
+  catch(error){
+    console.log(error)
+  }
+}
+
+export const DeleteGroup=async(id,setGroup)=>{
+  try {
+    await axios.delete(`/groups/${id}`).then((res) => {
+      console.log(res.data);
+    })
+    GetGroups(setGroup)
+
   }
   catch(error){
     console.log(error)

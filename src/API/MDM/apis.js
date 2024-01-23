@@ -1,6 +1,8 @@
 import axios from "axios";
 
-axios.defaults.baseURL=process.env.REACT_APP_FIELDS_API_URL
+const url=process.env.REACT_APP_FIELDS_API_URL
+
+axios.defaults.baseURL=url
 
 const PostApi =  async (PostData,handleClick,setData,ref,handleErrOpen) => {
 
@@ -16,11 +18,8 @@ const PostApi =  async (PostData,handleClick,setData,ref,handleErrOpen) => {
                     display_name: '',
                     type: '',
                     details: {
-    
                     },
                 })
-           
-                
                 // setTimeout(()=>{
                 //     window.location.reload()
                 // },2000)
