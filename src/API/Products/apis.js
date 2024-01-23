@@ -1,6 +1,8 @@
 import axios from 'axios';
 
-axios.defaults.baseURL = 'http://192.168.100.181:8888';
+axios.defaults.baseURL = process.env.REACT_APP_FIELDS_API_URL;
+
+
 
 export const PostApi = async (data, getApi, setRows, setData, setPostData, setTableRows, handleClick) => {
   try {

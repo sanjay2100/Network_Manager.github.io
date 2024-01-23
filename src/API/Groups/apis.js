@@ -1,5 +1,5 @@
 import axios from 'axios';
-axios.defaults.baseURL = 'http://192.168.100.181:9999';
+axios.defaults.baseURL = process.env.REACT_APP_BASE_URL;
 
 export const CreateGroup = async (data, handlesnackClick, setPostData) => {
   try {

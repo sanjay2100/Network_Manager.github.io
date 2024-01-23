@@ -1,4 +1,4 @@
-import React from 'react';
+import React ,{useState,useEffect}from 'react';
 
 // material-ui
 import { Grid, Button } from '@mui/material';
@@ -18,8 +18,8 @@ import DialogTitle from '@mui/material/DialogTitle';
 // import SubCard from 'ui-component/cards/SubCard';
 import MainCard from 'ui-component/cards/MainCard';
 import { gridSpacing } from 'store/constant';
-import { DataGrid } from '@mui/x-data-grid';
-import { IconPencil } from '@tabler/icons';
+import { IconPencil, IconTrash } from '@tabler/icons';
+import { GetGroups } from 'API/Groups/apis';
 
 // mui Accordion
 const Accordion = styled((props) => <MuiAccordion disableGutters elevation={0} square {...props} />)(({ theme }) => ({
@@ -31,6 +31,7 @@ const Accordion = styled((props) => <MuiAccordion disableGutters elevation={0} s
     display: 'none'
   }
 }));
+
 
 const AccordionSummary = styled((props) => (
   <MuiAccordionSummary expandIcon={<ArrowForwardIosSharpIcon sx={{ fontSize: '0.9rem' }} />} {...props} />
@@ -61,6 +62,9 @@ const ViewGroup = () => {
   //   edit group onclick function
   const [open, setOpen] = React.useState(false);
 
+  // Variable for storing group
+  const [Group,setGroup]=useState(null)
+
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -68,194 +72,99 @@ const ViewGroup = () => {
   const handleClose = () => {
     setOpen(false);
   };
+
+// get all groups
+
+  useEffect(()=>{
+    GetGroups(setGroup)
+  },[])
+
+  console.log(Group);
+  
   //   list users
-  const columns = [
-    { field: 'id', headerName: 'id', width: 70 },
-    { field: 'firstName', headerName: 'Group name', width: 130 },
-    {
-      field: 'designation',
-      headerName: 'Designation',
-      width: 150
-    },
-    {
-      field: 'Action',
-      headerName: 'Action',
-      width: 150,
-      renderCell: () => {
-        const onClick = () => {};
-        return (
-          <Button variant="outlined" color="error" onClick={() => onClick()}>
-            Remove
-          </Button>
-        );
-      }
-    }
-  ];
-  const rows = [
-    { id: 1, lastName: 'Snow', firstName: 'Jon', designation: 'DS', State: 'Tamil Nadu' },
-    { id: 2, lastName: 'Lannister', firstName: 'Cersei', designation: 'TM', State: null },
-    { id: 3, lastName: 'Lannister', firstName: 'Jaime', designation: 'DS', State: 'Delhi' },
-    { id: 4, lastName: 'Stark', firstName: 'Arya', designation: 'TH', State: 'kerala' },
-    { id: 5, lastName: 'Targaryen', firstName: 'Daenerys', designation: 'SH', State: 'Andhra' },
-    { id: 6, lastName: 'Melisandre', firstName: null, designation: 'RM', State: 'Tamil Nadu' },
-    { id: 7, lastName: 'Clifford', firstName: 'Ferrara', designation: 'DS', State: 'Tamil Nadu' },
-    { id: 8, lastName: 'Frances', firstName: 'Rossini', designation: 'AGENT', State: 'Tamil Nadu' },
-    { id: 9, lastName: 'Roxie', firstName: 'Harvey', designation: 'AGENT', State: 'Tamil Nadu' }
-  ];
+ 
+
+const[rows,setRows]=useState([])
+
+const AddMembersTable=()=>{
+  if(Array.isArray(Group)){
+    Group.map(item=>{
+      item.members.map((member,index)=>{
+        setRows([...rows,{id:index,userid:member}])
+      })
+    })
+  }
+}
+
+useEffect(()=>{
+    AddMembersTable()
+},[Group])
+
+console.log(rows);
+
+console.log("backendurl ",process.env.REACT_APP_BASE_URL);
+
+
+  // const rows = [
+  //   { id: 1, lastName: 'Snow', firstName: 'Jon', designation: 'DS', State: 'Tamil Nadu' },
+  //   { id: 2, lastName: 'Lannister', firstName: 'Cersei', designation: 'TM', State: null },
+  //   { id: 3, lastName: 'Lannister', firstName: 'Jaime', designation: 'DS', State: 'Delhi' },
+  //   { id: 4, lastName: 'Stark', firstName: 'Arya', designation: 'TH', State: 'kerala' },
+  //   { id: 5, lastName: 'Targaryen', firstName: 'Daenerys', designation: 'SH', State: 'Andhra' },
+  //   { id: 6, lastName: 'Melisandre', firstName: null, designation: 'RM', State: 'Tamil Nadu' },
+  //   { id: 7, lastName: 'Clifford', firstName: 'Ferrara', designation: 'DS', State: 'Tamil Nadu' },
+  //   { id: 8, lastName: 'Frances', firstName: 'Rossini', designation: 'AGENT', State: 'Tamil Nadu' },
+  //   { id: 9, lastName: 'Roxie', firstName: 'Harvey', designation: 'AGENT', State: 'Tamil Nadu' }
+  // ];
 
   return (
     <>
       <MainCard title="List of Groups">
         <Grid container spacing={gridSpacing}>
-          <Grid item xs={12}>
+        {Array.isArray(Group) && Group.map((item,index)=>(
+
+          <Grid item xs={12}  key={index}>
             {/* <SubCard title="Group Name">
               <Grid container spacing={gridSpacing}>
 
               </Grid>
             </SubCard> */}
-            <Accordion expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>
+              <Accordion expanded={expanded === index} onChange={handleChange(index)}>
               <AccordionSummary
                 aria-controls="panel1d-content"
                 id="panel1d-header"
                 style={{ display: 'flex', justifyContent: 'space-between' }}
               >
-                <Typography variant="h4">Group Name</Typography>
+                <Typography variant="h4">{item.group_name}</Typography>
                 <IconPencil color="#2196F3" onClick={handleClickOpen} />
               </AccordionSummary>
               <AccordionDetails>
-                <DataGrid
-                  rows={rows}
-                  columns={columns}
-                  initialState={{
-                    pagination: {
-                      paginationModel: { page: 0, pageSize: 5 }
-                    }
-                  }}
-                  pageSizeOptions={[5, 10]}
-                  checkboxSelection
-                />
+                <table style={{width:'100%'}}>
+                  <thead>
+                    <tr>
+                      <th style={{textAlign:'left',padding:'5px'}}>User_id</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {item.members.map((tab,tabindex)=>(
+                      <tr key={tabindex}>
+                        <td style={{padding:'5px'}}>{tab}</td>
+                        <td style={{color:'red'}}>{<IconTrash/>}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                 </table>
                 <Button variant="contained" color="error" sx={{ margin: '15px', float: 'right' }}>
                   Delete group
                 </Button>
               </AccordionDetails>
             </Accordion>
+            
           </Grid>
-          <Grid item xs={12}>
-            {/* <SubCard title="Group Name">
-              <Grid container spacing={gridSpacing}>
+                      ))}
 
-               </Grid>
-            </SubCard> */}
-            <Accordion onChange={handleChange('panel1')}>
-              <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
-                <Typography variant="h4">Group Name</Typography>
-                <IconPencil color="#2196F3" onClick={handleClickOpen} />
-              </AccordionSummary>
-              <AccordionDetails>
-                <DataGrid
-                  rows={rows}
-                  columns={columns}
-                  initialState={{
-                    pagination: {
-                      paginationModel: { page: 0, pageSize: 5 }
-                    }
-                  }}
-                  pageSizeOptions={[5, 10]}
-                  checkboxSelection
-                />
-                <Button variant="contained" color="error" sx={{ margin: '15px', float: 'right' }}>
-                  Delete group
-                </Button>
-              </AccordionDetails>
-            </Accordion>
-          </Grid>
-          <Grid item xs={12}>
-            {/* <SubCard title="Group Name">
-              <Grid container spacing={gridSpacing}>
-
-               </Grid>
-            </SubCard> */}
-            <Accordion onChange={handleChange('panel1')}>
-              <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
-                <Typography variant="h4">Group Name</Typography>
-                <IconPencil color="#2196F3" onClick={handleClickOpen} />
-              </AccordionSummary>
-              <AccordionDetails>
-                <DataGrid
-                  rows={rows}
-                  columns={columns}
-                  initialState={{
-                    pagination: {
-                      paginationModel: { page: 0, pageSize: 5 }
-                    }
-                  }}
-                  pageSizeOptions={[5, 10]}
-                  checkboxSelection
-                />
-                <Button variant="contained" color="error" sx={{ margin: '15px', float: 'right' }}>
-                  Delete group
-                </Button>
-              </AccordionDetails>
-            </Accordion>
-          </Grid>
-          <Grid item xs={12}>
-            {/* <SubCard title="Group Name">
-              <Grid container spacing={gridSpacing}>
-
-               </Grid>
-            </SubCard> */}
-            <Accordion onChange={handleChange('panel1')}>
-              <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
-                <Typography variant="h4">Group Name</Typography>
-                <IconPencil color="#2196F3" onClick={handleClickOpen} />
-              </AccordionSummary>
-              <AccordionDetails>
-                <DataGrid
-                  rows={rows}
-                  columns={columns}
-                  initialState={{
-                    pagination: {
-                      paginationModel: { page: 0, pageSize: 5 }
-                    }
-                  }}
-                  pageSizeOptions={[5, 10]}
-                  checkboxSelection
-                />
-                <Button variant="contained" color="error" sx={{ margin: '15px', float: 'right' }}>
-                  Delete group
-                </Button>
-              </AccordionDetails>
-            </Accordion>
-          </Grid>
-          <Grid item xs={12}>
-            {/* <SubCard title="Group Name">
-              <Grid container spacing={gridSpacing}>
-
-               </Grid>
-            </SubCard> */}
-            <Accordion onChange={handleChange('panel1')}>
-              <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
-                <Typography variant="h4">Group Name</Typography>
-                <IconPencil color="#2196F3" onClick={handleClickOpen} />
-              </AccordionSummary>
-              <AccordionDetails>
-                <DataGrid
-                  rows={rows}
-                  columns={columns}
-                  initialState={{
-                    pagination: {
-                      paginationModel: { page: 0, pageSize: 5 }
-                    }
-                  }}
-                  pageSizeOptions={[5, 10]}
-                  checkboxSelection
-                />
-                <Button variant="contained" color="error" sx={{ margin: '15px', float: 'right' }}>
-                  Delete group
-                </Button>
-              </AccordionDetails>
-            </Accordion>
-          </Grid>
+        
         </Grid>
       </MainCard>
 
