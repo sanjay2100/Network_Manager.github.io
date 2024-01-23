@@ -22,7 +22,7 @@ function ProductMaster() {
     } else if (name === 'mandatory') {
       setData({ ...Data, mandatory: value });
     }
-    console.log(Data);
+    //console.log(Data);
   };
 
   const Navigate = useNavigate();

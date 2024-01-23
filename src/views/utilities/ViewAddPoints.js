@@ -33,7 +33,7 @@ export default function ViewAddPoints() {
      getApi(setData, setError);
     };
 
-// console.log(id);
+// //console.log(id);
 
 
   useEffect(() => {

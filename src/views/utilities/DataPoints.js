@@ -19,9 +19,9 @@ const DataPoints = () => {
 
   const [PostData, setPostData] = useState({});
 
-  const[NameErr,setNameErr]=useState(false)
-  const[DNameErr,setDNameErr]=useState(false)
-  const[TypeErr,setTypeErr]=useState(false)
+  const [NameErr, setNameErr] = useState(false);
+  const [DNameErr, setDNameErr] = useState(false);
+  const [TypeErr, setTypeErr] = useState(false);
 
   const ref = useRef();
 
@@ -32,8 +32,9 @@ const DataPoints = () => {
     options: [],
     details: {}
   });
+  const [FieldErrAlert,setFieldErrAlert]=useState(false)
 
-  //console.log(Data);
+  ////console.log(Data);
 
   const [OpenAlert, setOpenAlert] = useState(false);
   const [OpenErrAlert, setErrAlert] = useState(false);
@@ -75,7 +76,7 @@ const DataPoints = () => {
 
     // }
 
-    //console.log(filteredObject);
+    ////console.log(filteredObject);
   };
 
   const dataType = [
@@ -153,12 +154,12 @@ const DataPoints = () => {
       fields: [
         [
           {
-            id: 'ListName',
+            id: 'optionDisplayName',
             name: 'Option display name',
             type: 'text'
           },
           {
-            id: 'List Value',
+            id: 'optionValue',
             name: 'value',
             type: 'file'
           },
@@ -237,7 +238,7 @@ const DataPoints = () => {
       Displayname: '',
       type: ''
     };
-    //console.log(Selected);
+    ////console.log(Selected);
 
     setSelected([...Selected, obj]);
 
@@ -245,8 +246,8 @@ const DataPoints = () => {
       ...Data,
       options: [...Data.options, dataField]
     });
-    //console.log("Options" + Selected);
-    //console.log(Data);
+    ////console.log("Options" + Selected);
+    ////console.log(Data);
   };
 
   // // delete
@@ -256,65 +257,74 @@ const DataPoints = () => {
     console.log('maindata', mainData);
     setData({ ...Data, options: mainData });
 
-    setSelected(data);
-    // console.log(Selected);
-    // setPostData(...PostData,options=[...PostData.options.slice(0, index),...PostData.options.slice(index + 1)])
-    //console.log(data);
+    setSelected(data);  
+    console.log("selected",Selected);
+     setPostData({...PostData,options:[...PostData.options.slice(0, index),...PostData.options.slice(index + 1)]})
+    ////console.log(data);
   };
 
   useEffect(() => {
-    console.log(Selected);
-    console.log(Data);
+    //console.log(Selected);
+    //console.log(Data);
   }, [Data]);
 
   useEffect(() => {
-    console.log(Selected);
-    console.log(Data);
+    //console.log(Selected);
+    //console.log(Data);
   }, [Data]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if(!PostData.name){
-      setNameErr(true)
-    }
-    else if(!PostData.display_name){
-      setDNameErr(true)
-    }
-    else if(!PostData.type){
-      setTypeErr(true)
+    if (!PostData.name) {
+      setNameErr(true);
+      setFieldErrAlert(true); 
+    } else if (!PostData.display_name) {
+      setDNameErr(true);
+      setFieldErrAlert(true); 
+
+    } else if (!PostData.type) {
+      setTypeErr(true);
+      setFieldErrAlert(true); 
+
+    } else PostApi(PostData, handleClick, setData, ref, handleErrOpen);
+
+    //console.log(PostData);
+  };
+
+  const handleAlertClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
     }
 
-   else  PostApi(PostData, handleClick, setData, ref, handleErrOpen);
-
-    
-
-    console.log(PostData);
+    setOpenAlert(false);
+    setErrAlert(false);
+    setFieldErrAlert(false)
   };
 
   const handleChange = (event) => {
-    console.log(dataType);
-    const sel=dataType.find(data =>  {
-      return data.type===event
-    })
-    console.log(sel);
-     setSelected(sel.fields);
+    //console.log(dataType);
+    const sel = dataType.find((data) => {
+      return data.type === event;
+    });
+    //console.log(sel);
+    setSelected(sel.fields);
   };
-  //console.log(Selected);
+  console.log(Selected);
 
   const handleDataChange = (id, data, index) => {
-    //console.log(index, +' ' + id);
+    ////console.log(index, +' ' + id);
     if (id === 'Name') {
       setData({ ...Data, name: data });
-      setNameErr(false)
+      setNameErr(false);
     }
     if (id === 'Displayname') {
       setData({ ...Data, display_name: data });
-      setDNameErr(false)
+      setDNameErr(false);
     }
     if (id === 'type') {
       setData({ ...Data, type: data });
-      setTypeErr(false)
+      setTypeErr(false);
     }
     if (id === 'Regex') {
       setData({
@@ -371,26 +381,28 @@ const DataPoints = () => {
       });
     }
     if (id === 'optionDisplayName' && index !== null) {
-      //console.log(index);
+      ////console.log(index);
       setData((prevData) => {
-        console.log(prevData);
+        //console.log(prevData);
         const updatedOptions = [...prevData.options];
-        //console.log(updatedOptions);
+        ////console.log(updatedOptions);
         updatedOptions[index] = { ...updatedOptions[index], Displayname: data };
         return { ...prevData, options: updatedOptions };
       });
     }
     if (id === 'optionValue' && index !== null) {
-      //console.log(index);
+      ////console.log(index);
       setData((prevData) => {
-        console.log(prevData);
+        //console.log(prevData);
         const updatedOptions = [...prevData.options];
         updatedOptions[index] = { ...updatedOptions[index], type: data };
         return { ...prevData, options: updatedOptions };
       });
     }
-    // //console.log(Data);
+   
   };
+  console.log(Data);
+
   return (
     <form onSubmit={handleSubmit}>
       <SubCard title="Add data point">
@@ -405,13 +417,23 @@ const DataPoints = () => {
             Something went wrong!!!
           </Alert>
         </Snackbar>
+        <Snackbar
+          open={FieldErrAlert}
+          autoHideDuration={6000}
+          onClose={handleAlertClose}
+          anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+        >
+          <Alert severity="error" sx={{ width: '100%' }}>
+            Fill the required fields
+          </Alert>
+        </Snackbar>
 
         <Grid container sx={{ mt: 1 }} xl={12} justifyContent="space-between">
           <Grid item xl={6} md={6} xs={12}>
             <TextField
-            error={NameErr}
+              error={NameErr}
               size="large"
-              label="Name"
+              label="Name*"
               value={Data.name}
               fullWidth
               onChange={(e) => handleDataChange('Name', e.target.value, null)}
@@ -421,9 +443,9 @@ const DataPoints = () => {
         <Grid container sx={{ mt: 3 }} xl={12}>
           <Grid item xl={6} md={6} xs={12}>
             <TextField
-            error={DNameErr}
+              error={DNameErr}
               size="large"
-              label="Display Name"
+              label="Display Name*"
               value={Data.display_name}
               fullWidth
               onChange={(e) => handleDataChange('Displayname', e.target.value, null)}
@@ -440,7 +462,7 @@ const DataPoints = () => {
                 labelId="demo-select-small-label"
                 id="demo-select-small"
                 ref={ref}
-                label="Type"
+                label="Type*"
                 value={Data.type}
                 onChange={(e) => {
                   handleDataChange('type', e.target.value, null);
@@ -460,7 +482,6 @@ const DataPoints = () => {
           <FormLabel id="demo-radio-buttons-group-label">Unique</FormLabel>
           <RadioGroup
             aria-labelledby="demo-radio-buttons-group-label"
-            
             name="radio-buttons-group"
             row
             onChange={(e) => {
@@ -471,6 +492,7 @@ const DataPoints = () => {
             <FormControlLabel value="False" control={<Radio />} label="False" />
           </RadioGroup>
         </FormControl>
+        {/* postdata.options[index].Displayname/type */}
         <div style={{ width: '100%' }}>
           {Data.type !== '' &&
             Data.type !== null &&
@@ -482,7 +504,8 @@ const DataPoints = () => {
                     <TextField
                       key={subItem.id}
                       size="large"
-                      label={subItem.name || ''}
+                      label={subItem.name||""}
+                      value={subItem.id==="optionDisplayName"&&Data.options[subIndex]?Data.options[subIndex].Displayname : subItem.id==="optionValue"&&Data.options[subIndex]?Data.options[subIndex].type :''}
                       fullWidth
                       sx={{ display: subItem.type === 'button' ? 'none' : 'block', mt: 2 }}
                       onChange={(e) => handleDataChange(subItem.id, e.target.value, subIndex, OptionIndex)}

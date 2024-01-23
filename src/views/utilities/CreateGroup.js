@@ -4,6 +4,7 @@ import { Grid, TextField, Button, Snackbar, Modal, Box } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import MuiAlert from '@mui/material/Alert';
 import Autocomplete from '@mui/material/Autocomplete';
+import { AddUser, CreateGroup, GetGroups, getAllUsers } from 'API/Groups/apis';
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -24,38 +25,70 @@ const style = {
 function AdduserGroup() {
   const [SelectedRows, setSelectedRows] = useState('');
 
+  const[getData,setGetData] = useState(null)
+  const[SelectedGroup,SetSelectedGroup]=useState(null);
+
+  const [PostData, setPostData] = useState({
+    members: []
+  });
+
   useEffect(() => {
     console.log(SelectedRows);
+    if(SelectedRows!==''){
+      SelectedRows.forEach(element => {
+        setMemberData({ ...memberData, members: [...memberData.members,element.user_id ] });
+      });
+    }
   }, [SelectedRows]);
 
+
+
+
   const columns = [
-    { field: 'id', headerName: 'id', width: 70 },
-    { field: 'firstName', headerName: 'First name', width: 200 },
-    {
-      field: 'designation',
-      headerName: 'Designation',
-      width: 150
-    }
+    { field: 'name', headerName: 'Group members', width: 200 },
+    
   ];
 
-  const rows = [
-    { id: 1, lastName: 'Snow', firstName: 'Jon', designation: 'DS', State: 'Tamil Nadu' },
-    { id: 2, lastName: 'Lannister', firstName: 'Cersei', designation: 'TM', State: null },
-    { id: 3, lastName: 'Lannister', firstName: 'Jaime', designation: 'DS', State: 'Delhi' },
-    { id: 4, lastName: 'Stark', firstName: 'Arya', designation: 'TH', State: 'kerala' },
-    { id: 5, lastName: 'Targaryen', firstName: 'Daenerys', designation: 'SH', State: 'Andhra' },
-    { id: 6, lastName: 'Melisandre', firstName: null, designation: 'RM', State: 'Tamil Nadu' },
-    { id: 7, lastName: 'Clifford', firstName: 'Ferrara', designation: 'DS', State: 'Tamil Nadu' },
-    { id: 8, lastName: 'Frances', firstName: 'Rossini', designation: 'AGENT', State: 'Tamil Nadu' },
-    { id: 9, lastName: 'Roxie', firstName: 'Harvey', designation: 'AGENT', State: 'Tamil Nadu' }
-  ];
+  const[rows,setRows]=useState("")
+  const[Arg,setArg]=useState(null)
+  useEffect(()=>{
+    console.log("Selected group",SelectedGroup);
+    if(SelectedGroup){
+      setRows(SelectedGroup.members)
+      
+    }
+  },[SelectedGroup])
+
+  useEffect(()=>{
+    if(SelectedGroup){
+      setRows(SelectedGroup.members)
+      
+    }
+    const augmentedRows =Array.isArray(rows)? rows.map((value, index) => ({ id: index, name:value })):null;
+
+    setArg(augmentedRows)
+  },[getData])
+
+  useEffect(()=>{
+    const augmentedRows =Array.isArray(rows)? rows.map((value, index) => ({ id: index, name:value })):null;
+
+    setArg(augmentedRows)
+  },[rows])
+  console.log("arg",Arg);
 
   const [open, setOpen] = React.useState(false);
+  const[ErrOpen,setErrOpen]=useState(false);
   const [snackopen, setSnackopen] = React.useState(false);
   const [groupopen, setGroupopen] = useState(false);
 
+
+
   const handleClick = () => {
     setOpen(true);
+  };
+
+  const handleErrClick = () => {
+    setErrOpen(true);
   };
 
   const handlesnackClick = () => {
@@ -70,22 +103,86 @@ function AdduserGroup() {
     setOpen(false);
     setGroupopen(false);
     setSnackopen(false);
-
+    setErrOpen(false);
   };
 
   const handleGroupclick = () => {
     setGroupopen(true);
   };
 
-  const top100Films = [
-    { label: 'Group1', year: 1994 },
-    { label: 'Group2', year: 1972 },
-    { label: 'Group3', year: 1974 },
-    { label: 'Group4', year: 2008 },
-    { label: 'Group5', year: 1957 },
-    { label: 'Group6', year: 1993 },
-    { label: 'Group7', year: 1994 }
+  const [userRows,setUserRows]=useState([])
+  
+  // const userRows = [
+  //   { id: '1', lastName: 'Snow', firstName: 'Jon', age: 14 },
+  //   { id: '2', lastName: 'Lannister', firstName: 'Cersei', age: 31 },
+  //   { id: '3', lastName: 'Lannister', firstName: 'Jaime', age: 31 },
+  //   { id: '4', lastName: 'Stark', firstName: 'Arya', age: 11 },
+  //   { id: '5', lastName: 'Targaryen', firstName: 'Daenerys', age: null },
+  //   { id: '6', lastName: 'Melisandre', firstName: null, age: 150 },
+  //   { id: '7', lastName: 'Clifford', firstName: 'Ferrara', age: 44 },
+  //   { id: '8', lastName: 'Frances', firstName: 'Rossini', age: 36 },
+  //   { id: '9', lastName: 'Roxie', firstName: 'Harvey', age: 65 },
+  // ];
+
+  const userColumns = [
+    {
+      field: 'name',
+      headerName: 'First name',
+      width: 150,
+      editable: true,
+    },
+    {
+      field: 'email',
+      headerName: 'Email',
+      width: 150,
+      editable: true,
+    },
+    
   ];
+  
+
+  const handleDataChange = (field, value) => {
+    switch (field) {
+      case 'Name':
+        setPostData({
+          ...PostData,
+          name: value
+        });
+        break;
+      case 'description':
+        setPostData({
+          ...PostData,
+          description: value
+        });
+        break;
+
+      default:
+        break;
+    }
+  };
+
+  // get api call
+
+  useEffect(()=>{
+    GetGroups(setGetData)
+    getAllUsers(setUserRows)
+  },[])
+
+  const[memberData,setMemberData]=useState({members:[]})
+
+  const createGroup=()=>{
+     const grpId=SelectedGroup.group_id
+     AddUser(grpId,memberData,setGetData,handleClick,handleErrClick)
+     SetSelectedGroup([])
+    
+  }
+
+  console.log("memberdata",memberData);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    CreateGroup(PostData,handlesnackClick,setPostData)
+  }
 
   return (
     <SubCard title="Add User to Group ">
@@ -94,18 +191,37 @@ function AdduserGroup() {
           User Added to Group
         </Alert>
       </Snackbar>
+
+      <Snackbar open={ErrOpen} autoHideDuration={2000} onClose={handleClose} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
+        <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
+          User already exist
+        </Alert>
+      </Snackbar>
+
       {/* new group add modal start */}
       <Modal open={groupopen} onClose={handleClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
         <Box sx={style}>
           <SubCard title="Create Group">
-            <Snackbar open={snackopen} autoHideDuration={2000} onClose={handleClose} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
+            <Snackbar
+              open={snackopen}
+              autoHideDuration={2000}
+              onClose={handleClose}
+              anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+            >
               <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
                 Group created
               </Alert>
             </Snackbar>
             <Grid container xl={12}>
               <Grid item xl={4} sx={{ display: 'flex', verticalAlign: 'center' }} mb={2}>
-                <TextField id="outlined-basic" label="Group name" variant="outlined" fullWidth />
+                <TextField
+                  id="outlined-basic"
+                  label="Group name"
+                  variant="outlined"
+                  value={PostData.name?PostData.name:""}
+                  fullWidth
+                  onChange={(e) => handleDataChange('Name', e.target.value)}
+                />
               </Grid>
               <Grid container xl={12}>
                 <Box
@@ -114,13 +230,19 @@ function AdduserGroup() {
                     maxWidth: '100%'
                   }}
                 >
-                  <TextField fullWidth label="Group decription" id="fullWidth" />
+                  <TextField
+                    fullWidth
+                    label="Group decription"
+                    value={PostData.description?PostData.description:""}
+                    id="fullWidth"
+                    onChange={(e) => handleDataChange('description', e.target.value)}
+                  />
                 </Box>
               </Grid>
 
               <Grid container xl={12} justifyContent="flex-end">
                 <Grid item xl={2} mt={1}>
-                  <Button variant="contained" color="secondary" onClick={handlesnackClick}>
+                  <Button variant="contained" color="secondary" onClick={handleSubmit}>
                     Create group
                   </Button>
                 </Grid>
@@ -136,8 +258,13 @@ function AdduserGroup() {
           <Autocomplete
             disablePortal
             id="combo-box-demo"
-            options={top100Films}
+            options={getData?getData:[]}
+            getOptionLabel={ (option) => option.group_name}
+          
+            onChange={(event, selectedOption) => SetSelectedGroup(selectedOption)}
             sx={{ width: 300 }}
+          
+            
             renderInput={(params) => <TextField {...params} label="Select group" />}
           />
         </Grid>
@@ -156,10 +283,32 @@ function AdduserGroup() {
             Create Group
           </Button>
         </Grid> */}
-        <Grid item xl={12} mt={2}>
+        <Grid container mt={1} xl={12} sm={12} xs={12} spacing={1}>
+        <Grid item xl={12} md={12} sm={12} xs={12}>
           <DataGrid
-            rows={rows}
+            rows={Array.isArray(Arg)?Arg:[]}
             columns={columns}
+            initialState={{
+              pagination: {
+                paginationModel: { page: 0, pageSize: 5 }
+              }
+            }}
+            
+            pageSizeOptions={[5, 10]}
+            checkboxSelection={false}
+            getRowId={(row) => row.id}
+            onRowSelectionModelChange={(ids) => {
+              const selectedIDs = new Set(ids);
+              const selectedRows =Array.isArray(Arg)&& Arg.filter((row) => selectedIDs.has(row.id));
+              setSelectedRows(selectedRows);
+            }}
+          />
+        </Grid>
+        <Grid item mt={1} xl={12} md={12} sm={12} xs={12}>
+          <DataGrid
+            rows={Array.isArray(userRows)?userRows:[]}
+            columns={userColumns}
+            getRowId={(row) => row.user_id}
             initialState={{
               pagination: {
                 paginationModel: { page: 0, pageSize: 5 }
@@ -169,14 +318,15 @@ function AdduserGroup() {
             checkboxSelection
             onRowSelectionModelChange={(ids) => {
               const selectedIDs = new Set(ids);
-              const selectedRows = rows.filter((row) => selectedIDs.has(row.id));
+              const selectedRows = userRows.filter((row) => selectedIDs.has(row.user_id));
               setSelectedRows(selectedRows);
             }}
           />
         </Grid>
+        </Grid>
         <Grid container xl={12} justifyContent="flex-end">
           <Grid item xl={2} mt={1} sx={{ display: 'flex', justifyContent: 'space-between' }}>
-            <Button variant="contained" color="secondary" onClick={handleClick}>
+            <Button variant="contained" color="secondary" onClick={createGroup}>
               add users
             </Button>
           </Grid>

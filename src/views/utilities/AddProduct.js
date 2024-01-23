@@ -62,24 +62,24 @@ const AddProduct = () => {
   const handleClose = () =>{
     setOpen(false);
     setOpenAddMore(false);
-    setTableRows([])
+   // setTableRows([])
   } 
   //   edit Modal
   const [editOpen, setEditOpen] = useState(false);
   const [EditData, setEditData] = useState([]);
   const handleClickOpen = (id) => {
-    console.log(id);
-    console.log(rows);
+    //console.log(id);
+    //console.log(rows);
     
    getById(id,setEditData)
-    console.log(EditData);
+    //console.log(EditData);
     setEditOpen(true);
   };
   const handleviewClose = () => {
     setEditOpen(false);
   };
 
-  console.log(EditData);
+  //console.log(EditData);
 
   const [PostData, setPostData] = useState({
     product_name: '',
@@ -147,24 +147,24 @@ const AddProduct = () => {
   }
 
   const handleDelete = (id) => {
-    console.log(id);
+    //console.log(id);
     deleteApi(id, getApi, setRows);
   };
 
   const [editrows, setEditRows] = useState([]);
   useEffect(() => {
-    console.log(EditData);
+    //console.log(EditData);
     setEditRows([])
     if (EditData[0]) {
-      console.log("jk", EditData[0].fields);
+      //console.log("jk", EditData[0].fields);
       EditData[0].fields.map((field) => {
-        console.log("jk", field.field_name);
+        //console.log("jk", field.field_name);
        return setEditRows([...editrows, createTableData(field.field_name, field.display_field_name)]);
       });
     }
   }, [EditData]);
 
-  console.log(editrows);
+  //console.log(editrows);
 
   // const editrows = [
   //  
@@ -216,7 +216,7 @@ const AddProduct = () => {
         <IconButton
           aria-label="delete"
           onClick={() => {
-            console.log(params);
+            //console.log(params);
             handleDelete(params.row._id);
           }}
           color="error"
@@ -260,25 +260,27 @@ const AddProduct = () => {
   }, []);
 
   useEffect(() => {
-    console.log(rows['products']);
+    //console.log(rows['products']);
   }, [rows]);
 
   const handleChange = (type, value) => {
     if (type === 'field') {
-      console.log(value);
-      console.log(value.name);
+      //console.log(value);
+      //console.log(value.name);
       setData({ ...Data, name: value.name, type: value.type, id: value._id, display_name: value.display_name });
-      console.log(Data);
+      //console.log(Data);
     } else {
-      console.log(value);
+      //console.log(value);
 
       setData({ ...Data, required: value });
-      console.log(Data);
+      //console.log(Data);
     }
   };
 
+ 
+
   const deleteAddedData = (index) => {
-    console.log(index);
+    //console.log(index);
 
     const updatedPost = [...post.slice(0, index), ...post.slice(index + 1)];
     const updatedTable = [...TableRows.slice(0, index), ...TableRows.slice(index + 1)];
@@ -286,7 +288,7 @@ const AddProduct = () => {
     setPost(updatedPost);
     setTableRows(updatedTable);
     setPostData({ ...PostData, fields: post });
-    console.log(PostData);
+    //console.log(PostData);
   };
 
   const handleCellFocus = useCallback((event) => {
@@ -298,25 +300,25 @@ const AddProduct = () => {
 
   const handleAddData = (e) => {
     e.preventDefault();
-    console.log("tr: ",TableRows);
+    //console.log("tr: ",TableRows);
     const updataedData = [...post, { field_obj_id: Data.id, value_required: Data.required }];
 
     setTableRows([...TableRows, createData(Data.name, Data.type, Data.required, 'x')]);
-    console.log(TableRows);
+    //console.log(TableRows);
 
     setData({ ...Data, name: '', type: '', required: '' });
     dataref.current.value = null;
 
     setPost(updataedData);
 
-    console.log(post);
+    //console.log(post);
   };
 
   useEffect(() => {
     setPostData({ ...PostData, fields: post });
   }, [post]);
 
-  console.log(PostData);
+  //console.log(PostData);
 
   
 
@@ -337,6 +339,9 @@ const AddProduct = () => {
     
    else PostApi(PostData, getApi, setRows, setData, setPostData, setPost, setTableRows, handleClick);
   };
+
+
+  
 
   return (
     <SubCard title="Add Product">
@@ -488,7 +493,7 @@ const AddProduct = () => {
       </form>
       {/* Edit Modal */}
 
-      <EditModal editOpen={editOpen} handleviewClose={handleviewClose} editrows={EditData[0]?EditData[0].fields:null} handleOpen={handleOpenAddMore} productId={EditData[0]?EditData[0]._id:null} post={post} AddMoreFields={AddMoreFields} setAddMoreFields={setAddMoreFields}  handleClickOpen={handleClickOpen} />
+      <EditModal editOpen={editOpen} handleviewClose={handleviewClose} editrows={EditData[0]?EditData[0].fields:null} handleOpen={handleOpenAddMore} productId={EditData[0]?EditData[0]._id:null} post={post} AddMoreFields={AddMoreFields} setAddMoreFields={setAddMoreFields}  handleClickOpen={handleClickOpen} totalData={EditData[0]?EditData[0]:null}/>
     </SubCard>
   );
 };
