@@ -4,6 +4,7 @@ import { Grid, TextField, Button, Snackbar, Modal, Box } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import MuiAlert from '@mui/material/Alert';
 import Autocomplete from '@mui/material/Autocomplete';
+// import { Link } from 'react-router-dom';
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -146,6 +147,11 @@ function AdduserGroup() {
             Create New Group
           </Button>
         </Grid>
+        {/* <Grid item xl={2} mt={1} sx={{ display: 'flex', alignItems: 'center' }}>
+          <Button color="secondary" component={Link} to="/Admin/ViewGroup" onClick={handleGroupclick}>
+            View Group
+          </Button>
+        </Grid> */}
         {/* <Grid item xl={2} ml={1} mt={1} sx={{ display: 'flex', alignItems: 'center' }}>
           <Button variant="outlined" color="secondary" onClick={handleClick}>
             Create Group
