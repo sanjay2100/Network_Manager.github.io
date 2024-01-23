@@ -46,7 +46,7 @@ const AccessManagement = () => {
       default:
         break;
     }
-    console.log(Data, FieldAccess);
+    //console.log(Data, FieldAccess);
   };
 
   const group = [
@@ -81,11 +81,11 @@ const AccessManagement = () => {
     setData({ ...Data, fields: [...Data.fields, FieldAccess] });
     setFieldAccess({ Field: '', access: '' });
     dataref.current.value = null;
-    console.log('add field', Data);
+    //console.log('add field', Data);
   };
 
   const handleSubmit = () => {
-    console.log(Data);
+    //console.log(Data);
   };
 
   return (

@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React,{useEffect} from 'react';
+import React,{useEffect,useState} from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -17,26 +17,52 @@ import { Button, Stack, Typography } from '@mui/material';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import { IconTrash } from '@tabler/icons';
-import { DeleteExistingField } from 'API/Products/apis';
+import { DeleteExistingField, EditRequireApi } from 'API/Products/apis';
 
 // eslint-disable-next-line react/prop-types
-const EditModal = ({ editOpen, handleviewClose, editrows, handleOpen ,productId,post,AddMoreFields,setAddMoreFields,handleClickOpen}) => {
- 
+const EditModal = ({ editOpen, handleviewClose, editrows, handleOpen ,productId,post,AddMoreFields,setAddMoreFields,handleClickOpen,totalData}) => {
+
   console.log("productId :",productId);
   console.log("postData :",post);
+  console.log("map0",editrows);
+
+  const[Edit,setEdit]=useState(null)
 
   useEffect(()=>{
-    
+
     setAddMoreFields(
       {...AddMoreFields,fields:post,productId:productId}
+
     )
+    console.log("thie is callsed");
   },[post])
+
+  console.log("req change",Edit);
 
 console.log("Add more fields",AddMoreFields);
 
+const handleRequireChange=(value,data)=>{
+  console.log(value,data);
+  const updataedData=[{
+    field_obj_id:totalData.fields[data].field_id,
+    value_required:value
+  }]
+  setEdit({
+    fields:  updataedData,
+  })
+}
+
+console.log(Edit);
 
 const handleDelete = (id) => {
   DeleteExistingField(productId,id,handleClickOpen)
+}
+
+
+const SaveChanges = () => {
+  console.log("called",);
+    EditRequireApi(productId,Edit,handleClickOpen)
+     setEdit(null)
 }
 
   return (
@@ -62,7 +88,7 @@ const handleDelete = (id) => {
             Add fields
           </Button>
         </Stack>
-        
+
         <TableContainer component={Paper}>
           <Table sx={{ minWidth: 600 }} aria-label="simple table">
             <TableHead>
@@ -75,7 +101,7 @@ const handleDelete = (id) => {
             </TableHead>
             {Array.isArray(editrows)&&editrows.length>0&&editrows[0].field_id!==null?
             <TableBody>
-            {Array.isArray(editrows)&&editrows.map((row) => (
+            {Array.isArray(editrows)&&editrows.map((row,rowIndex) => (
               <TableRow key={row.display_field_name} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
 
                 <TableCell component="th" scope="row" align="left">
@@ -83,15 +109,17 @@ const handleDelete = (id) => {
                 </TableCell>
                 <TableCell align="left">{row.display_field_name}</TableCell>
                 <TableCell>
-                  <Select sx={{ width: '80%' }} 
-                  value={row.value_required}
+                  <Select sx={{ width: '80%' }}
+                  value={Edit===null?row.value_required:Edit.fields[0].field_obj_id===row.field_id?Edit.fields[0].value_required:row.value_required}
+                  onChange={(e)=>handleRequireChange(e.target.value,rowIndex)}
+                  disabled={Edit===null?false:Edit.fields[0].field_obj_id===row.field_id?false:true}
                   >
                     <MenuItem value={true} >True</MenuItem>
                     <MenuItem value={false}>False</MenuItem>
                   </Select>
                 </TableCell>
                 <TableCell align="center" sx={{ color: '#D84646' }}>
-                  {<IconTrash onClick={()=>handleDelete(row.field_id)}/>}
+                  {<IconTrash style={{cursor:'pointer'}} onClick={()=>handleDelete(row.field_id)}/>}
                 </TableCell>
               </TableRow>
             ))}
@@ -99,12 +127,12 @@ const handleDelete = (id) => {
           :
           <Typography color='error' variant='h5' textAlign='center' sx={{mb:2}}>No fieldes added</Typography>
           }
-            
+
           </Table>
         </TableContainer>
       </DialogContent>
       <DialogActions>
-        <Button autoFocus onClick={handleviewClose}>
+        <Button autoFocus onClick={SaveChanges}>
           Save changes
         </Button>
       </DialogActions>
