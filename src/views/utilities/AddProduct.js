@@ -63,14 +63,14 @@ const AddProduct = () => {
     setOpen(false);
     setOpenAddMore(false);
    // setTableRows([])
-  } 
+  }
   //   edit Modal
   const [editOpen, setEditOpen] = useState(false);
   const [EditData, setEditData] = useState([]);
   const handleClickOpen = (id) => {
     //console.log(id);
     //console.log(rows);
-    
+
    getById(id,setEditData)
     //console.log(EditData);
     setEditOpen(true);
@@ -167,7 +167,7 @@ const AddProduct = () => {
   //console.log(editrows);
 
   // const editrows = [
-  //  
+  //
 
   //   createTableData('Date', 'date', ['false', 'true']),
   //   createTableData('Email', 'email', ['false', 'true']),
@@ -277,7 +277,7 @@ const AddProduct = () => {
     }
   };
 
- 
+
 
   const deleteAddedData = (index) => {
     //console.log(index);
@@ -320,7 +320,7 @@ const AddProduct = () => {
 
   //console.log(PostData);
 
-  
+
 
 
   const handleSubmit = (e) => {
@@ -336,36 +336,36 @@ const AddProduct = () => {
       setErrAlert(true)
 
     }
-    
+
    else PostApi(PostData, getApi, setRows, setData, setPostData, setPost, setTableRows, handleClick);
   };
 
 
-  
+
 
   return (
     <SubCard title="Add Product">
       {/* Add field modal */}
-      <Snackbar  
-      open={OpenAlert} 
-      autoHideDuration={6000} 
-      onClose={handleAlertClose} 
+      <Snackbar
+      open={OpenAlert}
+      autoHideDuration={6000}
+      onClose={handleAlertClose}
       >
         <Alert  severity="success" sx={{ width: '100%' }}>
           User Added to Group
         </Alert>
       </Snackbar>
 
-      <Snackbar  
-      open={ErrAlert} 
-      autoHideDuration={6000} 
-      onClose={handleAlertClose} 
+      <Snackbar
+      open={ErrAlert}
+      autoHideDuration={6000}
+      onClose={handleAlertClose}
       anchorOrigin={{vertical:'top',horizontal:'right'}}
       >
         <Alert  severity="error" sx={{ width: '100%' }}>
           Fill the required fields
         </Alert>
-      </Snackbar>  
+      </Snackbar>
 
       <FieldModal
         open={open}

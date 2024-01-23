@@ -21,7 +21,7 @@ import { DeleteExistingField, EditRequireApi } from 'API/Products/apis';
 
 // eslint-disable-next-line react/prop-types
 const EditModal = ({ editOpen, handleviewClose, editrows, handleOpen ,productId,post,AddMoreFields,setAddMoreFields,handleClickOpen,totalData}) => {
- 
+
   console.log("productId :",productId);
   console.log("postData :",post);
   console.log("map0",editrows);
@@ -29,7 +29,7 @@ const EditModal = ({ editOpen, handleviewClose, editrows, handleOpen ,productId,
   const[Edit,setEdit]=useState(null)
 
   useEffect(()=>{
-    
+
     setAddMoreFields(
       {...AddMoreFields,fields:post,productId:productId}
 
@@ -88,7 +88,7 @@ const SaveChanges = () => {
             Add fields
           </Button>
         </Stack>
-        
+
         <TableContainer component={Paper}>
           <Table sx={{ minWidth: 600 }} aria-label="simple table">
             <TableHead>
@@ -109,7 +109,7 @@ const SaveChanges = () => {
                 </TableCell>
                 <TableCell align="left">{row.display_field_name}</TableCell>
                 <TableCell>
-                  <Select sx={{ width: '80%' }} 
+                  <Select sx={{ width: '80%' }}
                   value={Edit===null?row.value_required:Edit.fields[0].field_obj_id===row.field_id?Edit.fields[0].value_required:row.value_required}
                   onChange={(e)=>handleRequireChange(e.target.value,rowIndex)}
                   disabled={Edit===null?false:Edit.fields[0].field_obj_id===row.field_id?false:true}
@@ -127,7 +127,7 @@ const SaveChanges = () => {
           :
           <Typography color='error' variant='h5' textAlign='center' sx={{mb:2}}>No fieldes added</Typography>
           }
-            
+
           </Table>
         </TableContainer>
       </DialogContent>

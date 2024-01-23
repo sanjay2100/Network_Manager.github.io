@@ -46,7 +46,7 @@ function AdduserGroup() {
 
   const columns = [
     { field: 'name', headerName: 'Group members', width: 200 },
-    
+
   ];
 
   const[rows,setRows]=useState("")
@@ -55,14 +55,14 @@ function AdduserGroup() {
     console.log("Selected group",SelectedGroup);
     if(SelectedGroup){
       setRows(SelectedGroup.members)
-      
+
     }
   },[SelectedGroup])
 
   useEffect(()=>{
     if(SelectedGroup){
       setRows(SelectedGroup.members)
-      
+
     }
     const augmentedRows =Array.isArray(rows)? rows.map((value, index) => ({ id: index, name:value })):null;
 
@@ -111,7 +111,7 @@ function AdduserGroup() {
   };
 
   const [userRows,setUserRows]=useState([])
-  
+
   // const userRows = [
   //   { id: '1', lastName: 'Snow', firstName: 'Jon', age: 14 },
   //   { id: '2', lastName: 'Lannister', firstName: 'Cersei', age: 31 },
@@ -137,9 +137,9 @@ function AdduserGroup() {
       width: 150,
       editable: true,
     },
-    
+
   ];
-  
+
 
   const handleDataChange = (field, value) => {
     switch (field) {
@@ -174,7 +174,7 @@ function AdduserGroup() {
      const grpId=SelectedGroup.group_id
      AddUser(grpId,memberData,setGetData,handleClick,handleErrClick)
      SetSelectedGroup([])
-    
+
   }
 
   console.log("memberdata",memberData);
@@ -260,11 +260,11 @@ function AdduserGroup() {
             id="combo-box-demo"
             options={getData?getData:[]}
             getOptionLabel={ (option) => option.group_name}
-          
+
             onChange={(event, selectedOption) => SetSelectedGroup(selectedOption)}
             sx={{ width: 300 }}
-          
-            
+
+
             renderInput={(params) => <TextField {...params} label="Select group" />}
           />
         </Grid>
@@ -293,7 +293,7 @@ function AdduserGroup() {
                 paginationModel: { page: 0, pageSize: 5 }
               }
             }}
-            
+
             pageSizeOptions={[5, 10]}
             checkboxSelection={false}
             getRowId={(row) => row.id}

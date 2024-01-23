@@ -257,7 +257,7 @@ const DataPoints = () => {
     console.log('maindata', mainData);
     setData({ ...Data, options: mainData });
 
-    setSelected(data);  
+    setSelected(data);
     console.log("selected",Selected);
      setPostData({...PostData,options:[...PostData.options.slice(0, index),...PostData.options.slice(index + 1)]})
     ////console.log(data);
@@ -278,14 +278,14 @@ const DataPoints = () => {
 
     if (!PostData.name) {
       setNameErr(true);
-      setFieldErrAlert(true); 
+      setFieldErrAlert(true);
     } else if (!PostData.display_name) {
       setDNameErr(true);
-      setFieldErrAlert(true); 
+      setFieldErrAlert(true);
 
     } else if (!PostData.type) {
       setTypeErr(true);
-      setFieldErrAlert(true); 
+      setFieldErrAlert(true);
 
     } else PostApi(PostData, handleClick, setData, ref, handleErrOpen);
 
@@ -399,7 +399,7 @@ const DataPoints = () => {
         return { ...prevData, options: updatedOptions };
       });
     }
-   
+
   };
   console.log(Data);
 

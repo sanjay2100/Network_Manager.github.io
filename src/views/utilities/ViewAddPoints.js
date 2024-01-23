@@ -28,8 +28,8 @@ export default function ViewAddPoints() {
 
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
-  const handleClose = () =>{ 
-    setOpen(false) 
+  const handleClose = () =>{
+    setOpen(false)
      getApi(setData, setError);
     };
 
@@ -72,7 +72,7 @@ export default function ViewAddPoints() {
     }
   ];
 
-  
+
 
   return (
     <SubCard title="MDM Data">
