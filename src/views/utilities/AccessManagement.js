@@ -1,4 +1,4 @@
-import React,{useEffect,useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import SubCard from 'ui-component/cards/SubCard';
 import { Grid, TextField, Button } from '@mui/material';
 import Autocomplete from '@mui/material/Autocomplete';
@@ -21,38 +21,35 @@ const AccessManagement = () => {
   const dataref = React.useRef();
 
   const [Data, setData] = React.useState({
-    fields:[]
+    fields: []
   });
 
-  const [FieldAccess, setFieldAccess] = React.useState({
-    
-  });
+  const [FieldAccess, setFieldAccess] = React.useState({});
 
-  const[display_name,setDisplayName] = useState({
-    
-  })
+  const [display_name, setDisplayName] = useState({});
 
-   const [ProductField,setProductField]=useState(null)
+  const [ProductField, setProductField] = useState(null);
 
   const handleChange = (field, value) => {
+    console.log(value);
     switch (field) {
       case 'group':
-        setData({ ...Data, group: group[value]._id });
-        setDisplayName({...display_name,group:group[value].name})
+        setData({ ...Data, group: value._id });
+        setDisplayName({ ...display_name, group: value.name });
         break;
-      case 'product':
-        setData({ ...Data, Product: Product[value]._id });
-        setDisplayName({...display_name,Product:Product[value].display_name})
-        //console.log(Product[value]._id);
-        getGroupFields(Product[value]._id)
+      case 'product': 
+        setData({ ...Data, Product:   value._id });
+        setDisplayName({ ...display_name, Product: value.display_name });
+        console.log("changeproduct ",value);
+        getGroupFields(value._id);
         break;
       case 'field':
-        setFieldAccess({ ...FieldAccess, Field: ProductField[0].fields[value].field_id });
-        setDisplayName({...display_name,Field:ProductField[0].fields[value].field_name})
+        setFieldAccess({ ...FieldAccess, Field: value.field_id });
+        setDisplayName({ ...display_name, Field: value.field_name });
         break;
       case 'access':
         setFieldAccess({ ...FieldAccess, access: value });
-        setDisplayName({...display_name,access:value})
+        setDisplayName({ ...display_name, access: value });
         break;
       default:
         break;
@@ -60,25 +57,24 @@ const AccessManagement = () => {
   };
   console.log(display_name);
 
-  const [group,setGroup]=useState(null)
-  const [Product,setProduct]=useState(null)
+  const [group, setGroup] = useState(null);
+  const [Product, setProduct] = useState(null);
 
-  const getGroup=()=>{
-    GetGroups(setGroup)
-    getApi(setProduct)
-  }
+  const getGroup = () => {
+    GetGroups(setGroup);
+    getApi(setProduct);
+  };
 
-
-  const getGroupFields=(id)=>{
-    getById(id,setProductField)
-  }
-console.log("product field",ProductField);
+  const getGroupFields = (id) => {
+    getById(id, setProductField);
+  };
+  console.log('product field', ProductField);
   console.log(Product);
   console.log(group);
 
-  useEffect(()=>{
-    getGroup()
-  },[])
+  useEffect(() => {
+    getGroup();
+  }, []);
   // const group = [
   //   { label: 'DA', year: 1994 },
   //   { label: 'TM', year: 1972 },
@@ -110,7 +106,7 @@ console.log("product field",ProductField);
     setRows([...rows, createData(display_name.group, display_name.Product, display_name.Field, display_name.access)]);
     setData({ ...Data, fields: [...Data.fields, FieldAccess] });
     setFieldAccess({ Field: null, access: null });
-    setDisplayName({...display_name,  Field: null, access: null }); 
+    setDisplayName({ ...display_name, Field: null, access: null });
     dataref.current.value = null;
     //console.log('add field', Data);
   };
@@ -126,10 +122,9 @@ console.log("product field",ProductField);
           <Grid container xl={10} spacing={2}>
             <Grid item xl={4} md={6} xs={12}>
               <Autocomplete
-            
                 id="combo-box-demo"
-                value={display_name.group||""}
-               getOptionLabel={(option) => {
+                value={display_name.group || ''}
+                getOptionLabel={(option) => {
                   if (typeof option === 'string') {
                     return option;
                   }
@@ -141,17 +136,17 @@ console.log("product field",ProductField);
                   }
                   return option.name;
                 }}
-                options={Array.isArray(group)?group:[]}
-                renderInput={(params) => <TextField  {...params} label="Group" />}
+                options={Array.isArray(group) ? group : []}
+                renderInput={(params) => <TextField {...params} label="Group" />}
                 fullWidth
-                onChange={(e) => handleChange('group', e.target.value)}
+                onChange={(e,value) => handleChange('group', value)}
               />
             </Grid>
 
             <Grid item xl={4} md={6} xs={12}>
               <Autocomplete
                 id="combo-box-demo"
-                value={display_name.Product||""}
+                value={display_name.Product || ''}
                 getOptionLabel={(option) => {
                   if (typeof option === 'string') {
                     return option;
@@ -164,11 +159,10 @@ console.log("product field",ProductField);
                   }
                   return option.product_name;
                 }}
-              
-                options={Array.isArray(Product)?Product:[]}
-                renderInput={(params) => <TextField  {...params} ref={dataref} label="Product" fullWidth />}
+                options={Array.isArray(Product) ? Product : []}
+                renderInput={(params) => <TextField {...params} ref={dataref} label="Product" fullWidth />}
                 fullWidth
-                onChange={(e) => handleChange('product', e.target.value)}
+                onChange={(e,value) => handleChange('product', value)}
               />
             </Grid>
           </Grid>
@@ -176,7 +170,7 @@ console.log("product field",ProductField);
           <Grid container xl={10} spacing={2} sx={{ mt: 1 }} alignItems="center">
             <Grid item xl={4} md={6} xs={10}>
               <Autocomplete
-                value={display_name.Field||""}
+                value={display_name.Field || ''}
                 id="combo-box-demo"
                 getOptionLabel={(option) => {
                   if (typeof option === 'string') {
@@ -189,10 +183,11 @@ console.log("product field",ProductField);
                     return '';
                   }
                   return option.display_field_name;
-                }}                options={Array.isArray(ProductField)?ProductField[0].fields:[]}
-                renderInput={(params) => <TextField  {...params} label="Field" />}
+                }}
+                options={Array.isArray(ProductField) ? ProductField[0].fields : []}
+                renderInput={(params) => <TextField {...params} label="Field" />}
                 fullWidth
-                onChange={(e) => handleChange('field', e.target.value)}
+                onChange={(e,value) => handleChange('field',value)}
               />
             </Grid>
 
@@ -200,7 +195,7 @@ console.log("product field",ProductField);
               <FormControl fullWidth>
                 <InputLabel id="demo-simple-select-label">Access Type</InputLabel>
                 <Select
-                  value={display_name.access||''}
+                  value={display_name.access || ''}
                   labelId="demo-simple-select-label"
                   id="demo-simple-select"
                   label="Access type"
