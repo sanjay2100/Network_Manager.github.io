@@ -15,15 +15,13 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import { Stack } from '@mui/system';
 import { GetGroups } from 'API/Groups/apis';
-import { getApi } from 'API/Products/apis';
+import { getApi, getById } from 'API/Products/apis';
 
 const AccessManagement = () => {
   const dataref = React.useRef();
 
   const [Data, setData] = React.useState({
-    Group: '',
-    Product: '',
-    fields: []
+    
   });
 
   const [FieldAccess, setFieldAccess] = React.useState({
@@ -31,13 +29,18 @@ const AccessManagement = () => {
     access: ''
   });
 
+
+   const [ProductField,setProductField]=useState(null)
+
   const handleChange = (field, value) => {
     switch (field) {
       case 'group':
         setData({ ...Data, group: group[value].name });
         break;
       case 'product':
-        setData({ ...Data, Product: Product.products[value].display_name });
+        setData({ ...Data, Product: Product[value].display_name });
+        //console.log(Product[value]._id);
+        getGroupFields(Product[value]._id)
         break;
       case 'field':
         setFieldAccess({ ...FieldAccess, Field: Product[0].field[value] });
@@ -48,7 +51,7 @@ const AccessManagement = () => {
       default:
         break;
     }
-    //console.log(Data, FieldAccess);
+    console.log(Data, FieldAccess);
   };
 
   const [group,setGroup]=useState(null)
@@ -59,7 +62,13 @@ const AccessManagement = () => {
     getApi(setProduct)
   }
 
-  console.log(Product );
+
+  const getGroupFields=(id)=>{
+    getById(id,setProductField)
+  }
+console.log(ProductField);
+  console.log(Product);
+  console.log(group);
 
   useEffect(()=>{
     getGroup()
@@ -126,8 +135,8 @@ const AccessManagement = () => {
                 disablePortal
                 id="combo-box-demo"
                 value={Data.Product}
-                getOptionLabel={(dat)=>dat.display_name}
-                options={Product&&Array.isArray(Product.products)?Product.products:[]}
+                getOptionLabel={(dat)=>dat.product_name}
+                options={Array.isArray(Product)?Product:[]}
                 renderInput={(params) => <TextField {...params} ref={dataref} label="Product" fullWidth />}
                 fullWidth
                 onChange={(e) => handleChange('product', e.target.value)}
@@ -141,7 +150,7 @@ const AccessManagement = () => {
                 disablePortal
                 value={FieldAccess.Field}
                 id="combo-box-demo"
-                options={Array.isArray(Product)?Product[0].field:[]}
+                options={Array.isArray(Product)?[]:[]}
                 renderInput={(params) => <TextField value={FieldAccess.Field} {...params} label="Field" />}
                 fullWidth
                 onChange={(e) => handleChange('field', e.target.value)}

@@ -156,14 +156,14 @@ console.log(rows);
                 <table style={{width:'100%'}}>
                   <thead>
                     <tr>
-                      <th style={{textAlign:'left',paddingBlock:'10px',borderBottom:'2px solid #DFDFDF'}}>User_id</th>
+                      <th style={{textAlign:'left',paddingBlock:'10px',borderBottom:'2px solid #DFDFDF'}}>Name</th>
                       <th style={{borderBottom:'2px solid #DFDFDF'}}></th>
                     </tr>
                   </thead>
                   <tbody>
                     {item.members.map((tab,tabindex)=>(
                       <tr key={tabindex}>
-                        <td style={{paddingBlock:'10px',borderBottom:'1px solid #DFDFDF'}}>{tab}</td>
+                        <td style={{paddingBlock:'10px',borderBottom:'1px solid #DFDFDF'}}>{tab.name}</td>
                         <td style={{color:'red',textAlign:"right",borderBottom:'1px solid #DFDFDF'}} ><RemoveCircleIcon sx={{cursor:'pointer'}} onClick={handleUserDelete(item.group_id,tab)}/></td>
                       </tr>
                     ))}

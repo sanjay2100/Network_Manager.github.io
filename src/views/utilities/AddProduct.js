@@ -450,10 +450,10 @@ const AddProduct = () => {
               Cancel
             </Button>
           </Box>
-          {rows['products'] ? (
+          {rows ? (
             <Grid item style={{ height: 400, width: '100%' }}>
               <DataGrid
-                rows={rows['products']}
+                rows={rows}
                 columns={columns}
                 onCellKeyDown={handleCellKeyDown}
                 cellModesModel={cellModesModel}
