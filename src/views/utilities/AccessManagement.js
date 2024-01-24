@@ -21,38 +21,44 @@ const AccessManagement = () => {
   const dataref = React.useRef();
 
   const [Data, setData] = React.useState({
-    
+    fields:[]
   });
 
   const [FieldAccess, setFieldAccess] = React.useState({
-    Field: '',
-    access: ''
+    
   });
 
+  const[display_name,setDisplayName] = useState({
+    
+  })
 
    const [ProductField,setProductField]=useState(null)
 
   const handleChange = (field, value) => {
     switch (field) {
       case 'group':
-        setData({ ...Data, group: group[value].name });
+        setData({ ...Data, group: group[value]._id });
+        setDisplayName({...display_name,group:group[value].name})
         break;
       case 'product':
-        setData({ ...Data, Product: Product[value].display_name });
+        setData({ ...Data, Product: Product[value]._id });
+        setDisplayName({...display_name,Product:Product[value].display_name})
         //console.log(Product[value]._id);
         getGroupFields(Product[value]._id)
         break;
       case 'field':
-        setFieldAccess({ ...FieldAccess, Field: Product[0].field[value] });
+        setFieldAccess({ ...FieldAccess, Field: ProductField[0].fields[value].field_id });
+        setDisplayName({...display_name,Field:ProductField[0].fields[value].field_name})
         break;
       case 'access':
         setFieldAccess({ ...FieldAccess, access: value });
+        setDisplayName({...display_name,access:value})
         break;
       default:
         break;
     }
-    console.log(Data, FieldAccess);
   };
+  console.log(display_name);
 
   const [group,setGroup]=useState(null)
   const [Product,setProduct]=useState(null)
@@ -66,7 +72,7 @@ const AccessManagement = () => {
   const getGroupFields=(id)=>{
     getById(id,setProductField)
   }
-console.log(ProductField);
+console.log("product field",ProductField);
   console.log(Product);
   console.log(group);
 
@@ -101,15 +107,16 @@ console.log(ProductField);
   // ];
 
   const handleAddField = () => {
-    setRows([...rows, createData(Data.Group, Data.Product, FieldAccess.Field, FieldAccess.access)]);
+    setRows([...rows, createData(display_name.group, display_name.Product, display_name.Field, display_name.access)]);
     setData({ ...Data, fields: [...Data.fields, FieldAccess] });
-    setFieldAccess({ Field: '', access: '' });
+    setFieldAccess({ Field: null, access: null });
+    setDisplayName({...display_name,  Field: null, access: null }); 
     dataref.current.value = null;
     //console.log('add field', Data);
   };
 
   const handleSubmit = () => {
-    //console.log(Data);
+    console.log(Data);
   };
 
   return (
@@ -119,12 +126,23 @@ console.log(ProductField);
           <Grid container xl={10} spacing={2}>
             <Grid item xl={4} md={6} xs={12}>
               <Autocomplete
-                disablePortal
+            
                 id="combo-box-demo"
-                value={Data.name}
-                getOptionLabel={(dat)=>dat.name}
+                value={display_name.group||""}
+               getOptionLabel={(option) => {
+                  if (typeof option === 'string') {
+                    return option;
+                  }
+                  if (option.inputValue) {
+                    return option.inputValue;
+                  }
+                  if (option === '') {
+                    return '';
+                  }
+                  return option.name;
+                }}
                 options={Array.isArray(group)?group:[]}
-                renderInput={(params) => <TextField {...params} label="Group" />}
+                renderInput={(params) => <TextField  {...params} label="Group" />}
                 fullWidth
                 onChange={(e) => handleChange('group', e.target.value)}
               />
@@ -132,12 +150,23 @@ console.log(ProductField);
 
             <Grid item xl={4} md={6} xs={12}>
               <Autocomplete
-                disablePortal
                 id="combo-box-demo"
-                value={Data.Product}
-                getOptionLabel={(dat)=>dat.product_name}
+                value={display_name.Product||""}
+                getOptionLabel={(option) => {
+                  if (typeof option === 'string') {
+                    return option;
+                  }
+                  if (option.inputValue) {
+                    return option.inputValue;
+                  }
+                  if (option === '') {
+                    return '';
+                  }
+                  return option.product_name;
+                }}
+              
                 options={Array.isArray(Product)?Product:[]}
-                renderInput={(params) => <TextField {...params} ref={dataref} label="Product" fullWidth />}
+                renderInput={(params) => <TextField  {...params} ref={dataref} label="Product" fullWidth />}
                 fullWidth
                 onChange={(e) => handleChange('product', e.target.value)}
               />
@@ -147,11 +176,21 @@ console.log(ProductField);
           <Grid container xl={10} spacing={2} sx={{ mt: 1 }} alignItems="center">
             <Grid item xl={4} md={6} xs={10}>
               <Autocomplete
-                disablePortal
-                value={FieldAccess.Field}
+                value={display_name.Field||""}
                 id="combo-box-demo"
-                options={Array.isArray(Product)?[]:[]}
-                renderInput={(params) => <TextField value={FieldAccess.Field} {...params} label="Field" />}
+                getOptionLabel={(option) => {
+                  if (typeof option === 'string') {
+                    return option;
+                  }
+                  if (option.inputValue) {
+                    return option.inputValue;
+                  }
+                  if (option === '') {
+                    return '';
+                  }
+                  return option.display_field_name;
+                }}                options={Array.isArray(ProductField)?ProductField[0].fields:[]}
+                renderInput={(params) => <TextField  {...params} label="Field" />}
                 fullWidth
                 onChange={(e) => handleChange('field', e.target.value)}
               />
@@ -161,7 +200,7 @@ console.log(ProductField);
               <FormControl fullWidth>
                 <InputLabel id="demo-simple-select-label">Access Type</InputLabel>
                 <Select
-                  value={FieldAccess.access}
+                  value={display_name.access||''}
                   labelId="demo-simple-select-label"
                   id="demo-simple-select"
                   label="Access type"
