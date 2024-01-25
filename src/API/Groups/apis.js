@@ -1,10 +1,10 @@
 import axios from 'axios';
 
-axios.defaults.baseURL = process.env.REACT_APP_GROUP_URL
+const url =process.env.REACT_APP_GROUP_URL;
 
 export const CreateGroup = async (data, handlesnackClick, setPostData) => {
   try {
-    await axios.post('/groups', data).then((res) => {
+    await axios.post(`${url}/groups`, data).then((res) => {
       if (res.status == 201) {
         handlesnackClick();
         setPostData({
@@ -19,7 +19,7 @@ export const CreateGroup = async (data, handlesnackClick, setPostData) => {
 
 export const GetGroups = async (setGetdata) => {
   try {
-    await axios.get('/groups').then((res) => {
+    await axios.get(`${url}/groups`).then((res) => {
       setGetdata(res.data);
       console.log(res.data);
     });
@@ -30,7 +30,7 @@ export const GetGroups = async (setGetdata) => {
 
 export const AddUser=async(id,data,setGetdata,handleClick,handleErrClick) => {
   try {
-    await axios.put(`/groups/add_users/${id}`, data).then((res) => {
+    await axios.put(`${url}/groups/add_users/${id}`, data).then((res) => {
       handleClick()
       console.log(res.data);
     });
@@ -44,7 +44,7 @@ export const AddUser=async(id,data,setGetdata,handleClick,handleErrClick) => {
 
 export const getAllUsers=async(setUserRows)=>{
   try {
-    await axios.get('/users').then((res) => {
+    await axios.get(`${url}/users`).then((res) => {
       setUserRows(res.data);
       console.log(res.data);
     })
@@ -56,7 +56,7 @@ export const getAllUsers=async(setUserRows)=>{
 
 export const DeleteGroup=async(id,setGroup)=>{
   try {
-    await axios.delete(`/groups/${id}`).then((res) => {
+    await axios.delete(`${url}/groups/${id}`).then((res) => {
       console.log(res.data);
     })
     GetGroups(setGroup)

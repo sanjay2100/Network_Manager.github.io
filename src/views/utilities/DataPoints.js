@@ -263,15 +263,7 @@ const DataPoints = () => {
     ////console.log(data);
   };
 
-  useEffect(() => {
-    //console.log(Selected);
-    //console.log(Data);
-  }, [Data]);
 
-  useEffect(() => {
-    //console.log(Selected);
-    //console.log(Data);
-  }, [Data]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -323,6 +315,9 @@ const DataPoints = () => {
       setDNameErr(false);
     }
     if (id === 'type') {
+      setSelected(null)
+      setData(null)
+      setPostData(null)
       setData({ ...Data, type: data });
       setTypeErr(false);
     }
@@ -505,7 +500,7 @@ const DataPoints = () => {
                       key={subItem.id}
                       size="large"
                       label={subItem.name||""}
-                      value={subItem.id==="optionDisplayName"&&Data.options[subIndex]?Data.options[subIndex].Displayname : subItem.id==="optionValue"&&Data.options[subIndex]?Data.options[subIndex].type :''}
+                      value={subItem.id==="optionDisplayName"&&Data.options[subIndex]?Data.options[subIndex].Displayname : subItem.id==="optionValue"&&Data.options[subIndex]?Data.options[subIndex].type :Data.details.subItem}
                       fullWidth
                       sx={{ display: subItem.type === 'button' ? 'none' : 'block', mt: 2 }}
                       onChange={(e) => handleDataChange(subItem.id, e.target.value, subIndex, OptionIndex)}
