@@ -29,7 +29,7 @@ export const PostApi = async (data, getApi, setRows, setData, setPostData, setTa
 export const getApi = async (setData, getApi, setRows) => {
   try {
     await axios.get(`${url}/products`).then((res) => {
-      setData(res.data);
+      setData(res.data['products']);
     });
     getApi(setRows);
   } catch (error) {
